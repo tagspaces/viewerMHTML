@@ -13,11 +13,11 @@ To get updates you can:
 
 ## Features
 
-* **view markdown files:** 
+* **view MHT or MHTML files:**
 
 ## Screenshots
 
-![Lead TagSpaces Screenshot](http://www.tagspaces.org/content/v1.7/tagspaces-markdown.png)
+![Screen of the extension in action](http://www.tagspaces.org/content/v1.7/tagspaces-mhtml-viewer.png)
 
 ## Documentation
 
