@@ -15,12 +15,9 @@ function setContent(content) {
         // making all links open in the user default browser
         $("#mhtmlViewer").find( "a" ).bind('click', function(e){
             e.preventDefault();
-            //$(this).hover(function() {
-            //    $(this).css("cursor","default");
-            //});
             //window.open($(this).attr("href"),'_blank');
             //parent.postMessage("openLinkExternally",'*');
-        });
+        }).css("cursor","default");
 
     });
 
