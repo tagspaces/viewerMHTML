@@ -26,18 +26,41 @@ define(function(require, exports, module) {
         $containerElement = $('#'+containerElementID);
         currentFilePath = filePath;
 
+        var filePathURI = undefined;
+        if(isCordova || isWeb) {
+            filePathURI = filePath;
+        } else {
+            filePathURI = "file:///"+filePath;
+        }
+
         $containerElement.empty();
         $containerElement.css("background-color","white");
+
+        //$containerElement.;
+
+        $containerElement.append($('<div>', {
+                class: "alert alert-info",
+                style: "margin: 5px; font-size: 14px;",
+                text: "Due to security restrictions, opening of MHT files natively has been disabled. Press"
+            }).append($('<button>', {
+                class: "btn btn-primary",
+                style: "margin: 5px;",
+                text: "Open in new window"
+            }).click(function() {
+                window.open(filePathURI,'_blank');
+            })
+            ).append("to open the document in a new window. Bellow you will find a preview of the document.")
+        );
+
         $containerElement.append($('<iframe>', {
             id: "iframeViewer",
             sandbox: "allow-same-origin allow-scripts",
-            src: extensionDirectory+"/index.html",
             style: "background-color: white;",
             "nwdisable": "",
             "nwfaketop": ""
         }));
 
-        //window.addEventListener('message', receiveMessage, false);
+        window.addEventListener('message', receiveMessage, false);
 
         contentIFrame = document.getElementById('iframeViewer');
         contentIFrame.onload = function() {
@@ -48,11 +71,12 @@ define(function(require, exports, module) {
     };
 
     function receiveMessage(message) {
+        alert(message);
         console.log("Message Received: ");
         var data = JSON.parse(message.data);
         switch (data.event) {
-            case 'mhtmParserReady':
-                TSCORE.IO.loadTextFile(currentFilePath);
+            case 'openLinkExternally':
+                //TSCORE.openLinkExternally($(this).attr("href"));
                 break;
         }
     }
@@ -68,13 +92,8 @@ define(function(require, exports, module) {
     exports.setContent = function(content) {
         currentContent = content;
 
-        var bodyRegex = /\<body[^>]*\>([^]*)\<\/body/m;
-        var bodyContent = undefined;
-
-//        var titleRegex = /\<title[^>]*\>([^]*)\<\/title/m;
-//        var titleContent = content.match( titleRegex )[1];
-
         var contentWindow = document.getElementById("iframeViewer").contentWindow;
+
         if(typeof contentWindow.setContent === "function") {
             contentWindow.setContent(currentContent);
         }
