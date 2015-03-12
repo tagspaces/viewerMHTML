@@ -1,103 +1,101 @@
-/* Copyright (c) 2012-2014 The TagSpaces Authors. All rights reserved.
- * Use of this source code is governed by a AGPL3 license that 
+/* Copyright (c) 2012-2015 The TagSpaces Authors. All rights reserved.
+ * Use of this source code is governed by a AGPL3 license that
  * can be found in the LICENSE file. */
 
 define(function(require, exports, module) {
-"use strict";
+  "use strict";
 
-    console.log("Loading viewerMHTML");
+  console.log("Loading viewerMHTML");
 
-    exports.id = "viewerMHTML"; // ID should be equal to the directory name where the ext. is located
-    exports.title = "URL Viewer";
-    exports.type = "editor";
-    exports.supportedFileTypes = [ "mht", "mhtml" ];
+  exports.id = "viewerMHTML"; // ID should be equal to the directory name where the ext. is located
+  exports.title = "URL Viewer";
+  exports.type = "editor";
+  exports.supportedFileTypes = ["mht", "mhtml"];
 
-    var TSCORE = require("tscore");
+  var TSCORE = require("tscore");
 
-    var currentFilePath;
-    var currentContent;
-    var $containerElement;
-    var contentIFrame;
+  var currentFilePath;
+  var currentContent;
+  var $containerElement;
+  var contentIFrame;
 
-    var extensionDirectory = TSCORE.Config.getExtensionPath()+"/"+exports.id;
+  var extensionDirectory = TSCORE.Config.getExtensionPath() + "/" + exports.id;
 
-    exports.init = function(filePath, containerElementID) {
-        console.log("Initalization MHTML Viewer...");
-        $containerElement = $('#'+containerElementID);
-        currentFilePath = filePath;
+  exports.init = function(filePath, containerElementID) {
+    console.log("Initalization MHTML Viewer...");
+    $containerElement = $('#' + containerElementID);
+    currentFilePath = filePath;
 
-        var filePathURI = undefined;
-        if(isCordova || isWeb) {
-            filePathURI = filePath;
-        } else {
-            filePathURI = "file:///"+filePath;
-        }
-
-        $containerElement.empty();
-        $containerElement.css("background-color","white");
-
-        //$containerElement.;
-
-        $containerElement.append($('<div>', {
-                class: "alert alert-info",
-                style: "margin: 5px; font-size: 14px;",
-                text: "Due to security restrictions, opening of MHT files natively has been disabled. Press"
-            }).append($('<button>', {
-                class: "btn btn-primary",
-                style: "margin: 5px;",
-                text: "Open in new window"
-            }).click(function() {
-                window.open(filePathURI,'_blank');
-            })
-            ).append("to open the document in a new window. Bellow you will find a preview of the document.")
-        );
-
-        $containerElement.append($('<iframe>', {
-            id: "iframeViewer",
-            sandbox: "allow-same-origin allow-scripts",
-            style: "background-color: white;",
-            "nwdisable": "",
-            "nwfaketop": ""
-        }));
-
-        window.addEventListener('message', receiveMessage, false);
-
-        contentIFrame = document.getElementById('iframeViewer');
-        contentIFrame.onload = function() {
-            //console.log("IFrame Loaded: ");
-            TSCORE.IO.loadTextFile(currentFilePath);
-        };
-        contentIFrame.src = extensionDirectory+"/index.html";
-    };
-
-    function receiveMessage(message) {
-        alert(message);
-        console.log("Message Received: ");
-        var data = JSON.parse(message.data);
-        switch (data.event) {
-            case 'openLinkExternally':
-                //TSCORE.openLinkExternally($(this).attr("href"));
-                break;
-        }
+    var filePathURI;
+    if (isCordova || isWeb) {
+      filePathURI = filePath;
+    } else {
+      filePathURI = "file:///" + filePath;
     }
 
-    exports.setFileType = function() {
-        console.log("setFileType not supported on this extension");
+    $containerElement.empty();
+    $containerElement.css("background-color", "white");
+
+    //$containerElement.;
+
+    $containerElement.append($('<div>', {
+      class: "alert alert-info",
+      style: "margin: 5px; font-size: 14px;",
+      text: "Due to security restrictions, opening of MHT files natively has been disabled. Press"
+    }).append($('<button>', {
+      class: "btn btn-primary",
+      style: "margin: 5px;",
+      text: "Open in new window"
+    }).click(function() {
+      window.open(filePathURI, '_blank');
+    })).append("to open the document in a new window. Bellow you will find a preview of the document."));
+
+    $containerElement.append($('<iframe>', {
+      id: "iframeViewer",
+      sandbox: "allow-same-origin allow-scripts",
+      style: "background-color: white;",
+      "nwdisable": "",
+      "nwfaketop": ""
+    }));
+
+    window.addEventListener('message', receiveMessage, false);
+
+    contentIFrame = document.getElementById('iframeViewer');
+    contentIFrame.onload = function() {
+      //console.log("IFrame Loaded: ");
+      TSCORE.IO.loadTextFile(currentFilePath);
     };
+    contentIFrame.src = extensionDirectory + "/index.html";
+  };
 
-    exports.viewerMode = function(isViewerMode) {
-        // set readonly
-    };
+  function receiveMessage(message) {
+    alert(message);
+    console.log("Message Received: ");
+    var data = JSON.parse(message.data);
+    switch (data.event) {
+      case 'openLinkExternally':
+        //TSCORE.openLinkExternally($(this).attr("href"));
+        break;
+    }
+  }
 
-    exports.setContent = function(content) {
-        currentContent = content;
+  exports.setFileType = function() {
+    console.log("setFileType not supported on this extension");
+  };
 
-        var contentWindow = document.getElementById("iframeViewer").contentWindow;
+  exports.viewerMode = function(isViewerMode) {
+    // set readonly
+  };
 
-        if(typeof contentWindow.setContent === "function") {
-            contentWindow.setContent(currentContent);
-        }
-    };
+  exports.setContent = function(content) {
+    currentContent = content;
 
-    exports.getContent = function() {};
+    var contentWindow = document.getElementById("iframeViewer").contentWindow;
+
+    if (typeof contentWindow.setContent === "function") {
+      contentWindow.setContent(currentContent);
+    }
+  };
+
+  exports.getContent = function() {};
 });
