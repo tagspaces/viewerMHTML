@@ -42,8 +42,10 @@ define(function(require, exports, module) {
     //$containerElement.;
 
     $containerElement.append($('<div>', {
+      class: "flexLayoutVertical",
+    }).append($('<div>', {
       class: "alert alert-info",
-      style: "margin: 5px; font-size: 14px;",
+      style: "margin: 5px; font-size: 14px; background-color: gray;",
       text: "Due to security restrictions, opening of MHT files natively has been disabled. Press"
     }).append($('<button>', {
       class: "btn btn-primary",
@@ -51,15 +53,16 @@ define(function(require, exports, module) {
       text: "Open in new window"
     }).click(function() {
       window.open(filePathURI, '_blank');
-    })).append("to open the document in a new window. Bellow you will find a preview of the document."));
-
-    $containerElement.append($('<iframe>', {
-      id: "iframeViewer",
-      sandbox: "allow-same-origin allow-scripts",
-      style: "background-color: white;",
-      "nwdisable": "",
-      "nwfaketop": ""
-    }));
+    })).append("to open the document in a new window. Bellow you will find a preview of the document.")
+    ).append($('<iframe>', {
+          id: "iframeViewer",
+          sandbox: "allow-same-origin allow-scripts",
+          style: "background-color: white;",
+          class: "flexMaxHeight",
+          "nwdisable": "",
+          "nwfaketop": ""
+        }))
+    );
 
     window.addEventListener('message', receiveMessage, false);
     contentIFrame = document.getElementById('iframeViewer');
