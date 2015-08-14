@@ -5,7 +5,7 @@
 
 "use strict";
 
-function setContent(content) {
+function setContent(content, done) {
   //console.log("MHTML Content: "+content);
   var mhtparser = new MailParser();
   mhtparser.on("end", function(mail_object) {
@@ -25,6 +25,8 @@ function setContent(content) {
       //window.open($(this).attr("href"),'_blank');
       //parent.postMessage("openLinkExternally",'*');
     }).css("cursor", "default");
+
+    done(mail_object);
 
   });
 
