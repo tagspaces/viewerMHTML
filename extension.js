@@ -13,7 +13,8 @@ define(function(require, exports, module) {
   exports.supportedFileTypes = ["mht", "mhtml"];
 
   var TSCORE = require("tscore");
-
+  var MailParser = require("ext/viewerMHTML/mailparser/mailparser.min").MailParser;
+ 
   var currentFilePath;
   var currentContent;
   var $containerElement;
@@ -25,6 +26,8 @@ define(function(require, exports, module) {
     console.log("Initalization MHTML Viewer...");
     $containerElement = $('#' + containerElementID);
     currentFilePath = filePath;
+
+    //exports.getTextContent(filePath);
 
     var filePathURI;
     if (isCordova || isWeb) {
@@ -59,7 +62,6 @@ define(function(require, exports, module) {
     }));
 
     window.addEventListener('message', receiveMessage, false);
-
     contentIFrame = document.getElementById('iframeViewer');
     contentIFrame.onload = function() {
       //console.log("IFrame Loaded: ");
@@ -93,9 +95,31 @@ define(function(require, exports, module) {
     var contentWindow = document.getElementById("iframeViewer").contentWindow;
 
     if (typeof contentWindow.setContent === "function") {
+      contentWindow.MailParser = MailParser;
       contentWindow.setContent(currentContent);
     }
   };
 
   exports.getContent = function() {};
+
+  exports.getTextContent = function(file, result) {
+   
+    TSCORE.IO.getFileContent(file, function(buf) {
+      var mailparser = new MailParser();
+
+      var text = TSCORE.Utils.arrayBufferToStr(buf);
+      mailparser.on("end", function(parsedObject) {
+        //console.log(parsedObject);
+        var matched = parsedObject.html.match(/<body[^>]*>([\w|\W]*)<\/body>/im);
+        alert($(matched[1]).text());
+      });
+
+      mailparser.write(text);
+      mailparser.end();
+     
+    }, function(err) {
+      console.log(err);
+    });
+  };
+
 });
