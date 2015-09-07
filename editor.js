@@ -9,14 +9,12 @@ function setContent(content, done) {
   //console.log("MHTML Content: "+content);
   var mhtparser = new MailParser();
   mhtparser.on("end", function(mail_object) {
-    //console.log("From:", mail_object.from);
-    //console.log("Subject:", mail_object.subject);
-    //console.log("Text body:", mail_object.text);
-    //console.log("HTML body:", mail_object.html);
-    //console.log("Attachments:", mail_object.attachments);
+    //console.log("mail_object:", mail_object);
 
+    var m = /^content-location:(.*$)/im.exec(content); 
+    mail_object.contentLocation = (m.length > 0) ?  m[1] : "not found";
     var cleanedHTML = DOMPurify.sanitize(mail_object.html);
-
+    
     $("#mhtmlViewer").html(cleanedHTML);
 
     // making all links open in the user default browser

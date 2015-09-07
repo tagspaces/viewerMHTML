@@ -100,8 +100,7 @@ define(function(require, exports, module) {
     if (typeof contentWindow.setContent === "function") {
       contentWindow.MailParser = MailParser;
       contentWindow.setContent(currentContent, function(obj) {
-        var escapeFrom = _.escape(obj.headers.from); 
-        $(".alert-info").append("<p>From:" + escapeFrom + " date: " + obj.headers.date + "</p>");
+        $(".alert-info").append("<p>From:" + obj.contentLocation + " date: " + obj.headers.date + "</p>");
       });
     }
   };
