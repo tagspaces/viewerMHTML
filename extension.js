@@ -57,7 +57,7 @@ define(function(require, exports, module) {
     ).append($('<iframe>', {
           id: "iframeViewer",
           sandbox: "allow-same-origin allow-scripts",
-          style: "background-color: white;",
+          style: "background-color: white; padding: 3px;",
           class: "flexMaxHeight",
           "nwdisable": "",
           "nwfaketop": ""
