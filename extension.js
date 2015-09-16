@@ -39,35 +39,33 @@ define(function(require, exports, module) {
     $containerElement.empty();
     $containerElement.css("background-color", "white");
 
-    //$containerElement.;
+    var extUITmpl = Handlebars.compile(
+      '<div class="flexLayoutVertical" style="width: 100%; margin: 5px;">'+
+        '<div class="btn-group">'+
+          '<button class="btn btn-default" id="{{id}}OpenExternallyButton" title="Due security restrictions, opening of MHT(ML) files in iframes has been disabled. Use this button to open the file in a new TagSpaces window.">'+
+            '<i class="fa fa-desktop"></i>&nbsp;Open in new window'+
+          '</button>'+
+          '<button class="btn btn-default" title="" id="{{id}}OpenURLButton">'+
+            '<i class="fa fa-external-link"></i>&nbsp;Open externaly:'+
+          '</button>'+
+        '</div>'+
+        '<p style="font-size: 12px;">Preview of the document <span id="{{id}}Meta"></span></p>'+
+        '<iframe id="{{id}}Viewer" sandbox="allow-same-origin allow-scripts" style="background-color: white; padding: 3px; border: 0px;" class="flexMaxHeight" nwdisable="" nwfaketop="" src="ext/viewerMHTML/index.html"></iframe>'+
+      '</div>'
+      );
 
-    $containerElement.append($('<div>', {
-      class: "flexLayoutVertical",
-    }).append($('<div>', {
-      class: "alert alert-info",
-      style: "margin: 5px; font-size: 14px; background-color: gray;",
-      text: "Due to security restrictions, opening of MHT files natively has been disabled. Press"
-    }).append($('<button>', {
-      class: "btn btn-primary",
-      style: "margin: 5px;",
-      text: "Open in new window"
-    }).click(function() {
+    var extUI = extUITmpl({
+      id: exports.id
+    });
+    $containerElement.append(extUI);
+
+    $("#" + exports.id + "OpenExternallyButton").click(function() {
       window.open(filePathURI, '_blank');
-    })).append("to open the document in a new window. Bellow you will find a preview of the document.")
-    ).append($('<iframe>', {
-          id: "iframeViewer",
-          sandbox: "allow-same-origin allow-scripts",
-          style: "background-color: white; padding: 3px;",
-          class: "flexMaxHeight",
-          "nwdisable": "",
-          "nwfaketop": ""
-        }))
-    );
+    });
 
     window.addEventListener('message', receiveMessage, false);
-    contentIFrame = document.getElementById('iframeViewer');
+    contentIFrame = document.getElementById(exports.id + "Viewer");
     contentIFrame.onload = function() {
-      //console.log("IFrame Loaded: ");
       TSCORE.IO.loadTextFile(currentFilePath);
     };
     contentIFrame.src = extensionDirectory + "/index.html";
@@ -95,12 +93,19 @@ define(function(require, exports, module) {
   exports.setContent = function(content) {
     currentContent = content;
 
-    var contentWindow = document.getElementById("iframeViewer").contentWindow;
+    var contentWindow = document.getElementById(exports.id + "Viewer").contentWindow;
 
     if (typeof contentWindow.setContent === "function") {
       contentWindow.MailParser = MailParser;
       contentWindow.setContent(currentContent, function(obj) {
-        $(".alert-info").append("<p>From:" + obj.contentLocation + " date: " + obj.headers.date + "</p>");
+        $("#" + exports.id + "Meta").append("saved on " + obj.headers.date);
+        $("#" + exports.id + "OpenURLButton")
+          .append(obj.contentLocation)
+          .attr("href", obj.contentLocation)
+          .show()
+          .click(function() {
+            TSCORE.openLinkExternally($(this).attr("href"));
+          });
       });
     }
   };
@@ -116,7 +121,7 @@ define(function(require, exports, module) {
       mailparser.on("end", function(parsedObject) {
         //console.log(parsedObject);
         var matched = parsedObject.html.match(/<body[^>]*>([\w|\W]*)<\/body>/im);
-        alert($(matched[1]).text());
+        console.log($(matched[1]).text());
       });
 
       mailparser.write(text);
