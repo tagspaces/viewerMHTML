@@ -40,8 +40,8 @@ define(function(require, exports, module) {
     $containerElement.css("background-color", "white");
 
     var extUITmpl = Handlebars.compile(
-      '<div class="flexLayoutVertical" style="width: 100%; margin: 5px;">' +
-        '<div class="btn-group">' +
+      '<div class="flexLayoutVertical" style="width: 100%;">' +
+        '<div class="btn-group" style="margin: 5px;">' +
           '<button class="btn btn-default" id="{{id}}OpenExternallyButton" title="Due security restrictions, opening of MHT(ML) files in iframes has been disabled. Use this button to open the file in a new TagSpaces window.">' +
             '<i class="fa fa-desktop"></i>&nbsp;Open in new window' +
           '</button>' +
@@ -49,8 +49,8 @@ define(function(require, exports, module) {
             '<i class="fa fa-external-link"></i>&nbsp;Open externaly:' +
           '</button>' +
         '</div>' +
-        '<p style="font-size: 12px;">Preview of the document <span id="{{id}}Meta"></span></p>' +
-        '<iframe id="{{id}}Viewer" sandbox="allow-same-origin allow-scripts" style="background-color: white; padding: 3px; border: 0px;" class="flexMaxHeight" nwdisable="" nwfaketop="" src="ext/viewerMHTML/index.html"></iframe>' +
+        '<p style="margin: 5px; font-size: 12px;">Preview of the document <span id="{{id}}Meta"></span></p>' +
+        '<iframe id="{{id}}Viewer" sandbox="allow-same-origin allow-scripts" style="background-color: white; border: 0px;" class="flexMaxHeight" nwdisable="" nwfaketop="" src="ext/viewerMHTML/index.html"></iframe>' +
       '</div>'
       );
 
