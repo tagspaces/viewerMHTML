@@ -20,8 +20,8 @@ function setContent(content, done) {
     // making all links open in the user default browser
     $("#mhtmlViewer").find("a").bind('click', function(e) {
       e.preventDefault();
-      //window.open($(this).attr("href"),'_blank');
-      //parent.postMessage("openLinkExternally",'*');
+      var msg = { link : $(this).attr("href") };
+      window.parent.postMessage(JSON.stringify(msg), "*");
     }).css("cursor", "default");
 
     done(mail_object);
