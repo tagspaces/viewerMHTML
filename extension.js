@@ -50,7 +50,7 @@ define(function(require, exports, module) {
           '</button>' +
         '</div>' +
         '<p style="margin: 5px; font-size: 12px;">Preview of the document <span id="{{id}}Meta"></span></p>' +
-        '<iframe id="{{id}}Viewer" sandbox="allow-same-origin allow-scripts" style="background-color: white; border: 0px;" class="flexMaxHeight" nwdisable="" nwfaketop="" src="ext/viewerMHTML/index.html"></iframe>' +
+        '<iframe id="{{id}}Viewer" sandbox="allow-same-origin allow-scripts" style="background-color: white; border: 0px;" class="flexMaxHeight" nwdisable="" src="ext/viewerMHTML/index.html"></iframe>' +
       '</div>'
       );
 
@@ -63,24 +63,12 @@ define(function(require, exports, module) {
       window.open(filePathURI, '_blank');
     });
 
-    window.addEventListener('message', receiveMessage, false);
     contentIFrame = document.getElementById(exports.id + "Viewer");
     contentIFrame.onload = function() {
       TSCORE.IO.loadTextFile(currentFilePath);
     };
     contentIFrame.src = extensionDirectory + "/index.html";
   };
-
-  function receiveMessage(message) {
-    alert(message);
-    console.log("Message Received: ");
-    var data = JSON.parse(message.data);
-    switch (data.event) {
-      case 'openLinkExternally':
-        //TSCORE.openLinkExternally($(this).attr("href"));
-        break;
-    }
-  }
 
   exports.setFileType = function() {
     console.log("setFileType not supported on this extension");
