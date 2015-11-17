@@ -1,0 +1,29 @@
+{
+  "name": "viewerMHTML",
+  "id": "viewerMHTML",
+  "description": "A TagSpaces extension allowing you to open MHTML and EML files.",
+  "type": "viewer",
+  "version": "1.0.0",
+  "dependencies": {
+    "mailparser": "0.5.3"
+  },
+  "devDependencies": {},
+  "authors": [
+    "TagSpaces Authors - http://tagspaces.org",
+    "Ilian Sapundshiev - http://ilian.me"
+  ],
+  "keywords": [
+    "viewer",
+    "eml",
+    "mhtml",
+    "mht"
+  ],
+  "license": "",
+  "main": [
+    "extension.js"
+  ],
+  "ignore": [
+    "Gruntfile.js"
+  ],
+  "private": true
+}
