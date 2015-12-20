@@ -65,7 +65,9 @@ define(function(require, exports, module) {
 
     contentIFrame = document.getElementById(exports.id + "Viewer");
     contentIFrame.onload = function() {
-      TSCORE.IO.loadTextFile(currentFilePath);
+      TSCORE.IO.loadTextFilePromise(currentFilePath).then(exports.setContent, function(err) {
+        console.warn("Error loading content...");
+      });
     };
     contentIFrame.src = extensionDirectory + "/index.html";
   };
@@ -102,7 +104,7 @@ define(function(require, exports, module) {
 
   exports.getTextContent = function(file, result) {
    
-    TSCORE.IO.getFileContent(file, function(buf) {
+    TSCORE.IO.getFileContentPromise(file).then(function(buf) {
       var mailparser = new MailParser();
 
       var text = TSCORE.Utils.arrayBufferToStr(buf);
