@@ -4,9 +4,7 @@
   "description": "A TagSpaces extension allowing you to open MHTML and EML files.",
   "type": "viewer",
   "version": "1.0.0",
-  "dependencies": {
-    "mailparser": "0.5.3"
-  },
+  "dependencies": {},
   "devDependencies": {},
   "authors": [
     "TagSpaces Authors - http://tagspaces.org",
