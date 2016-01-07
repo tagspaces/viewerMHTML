@@ -1,5 +1,5 @@
 {
-  "name": "viewerMHTML",
+  "name": "MHTML Reader",
   "id": "viewerMHTML",
   "description": "A TagSpaces extension allowing you to open MHTML and EML files.",
   "type": "viewer",
