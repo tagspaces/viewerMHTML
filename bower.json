@@ -16,7 +16,7 @@
     "mhtml",
     "mht"
   ],
-  "license": "",
+  "license": "MIT",
   "main": [
     "extension.js"
   ],
