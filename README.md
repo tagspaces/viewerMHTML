@@ -23,7 +23,7 @@ To get updates you can:
 
 ## License
 
-`TagSpaces`'s code uses the AGPL (GNU Affero General Public License) Version 3, see our `LICENSE` file.
+MIT
 
 ## Feeds
 - Subscribe to RSS feed updates for the [tagspaces blog](http://tagspaces.org/blog/feed.xml)
