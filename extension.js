@@ -4,19 +4,17 @@
 define(function(require, exports, module) {
   "use strict";
 
-  console.log("Loading viewerMHTML");
-
   var extensionID = "viewerMHTML"; // ID should be equal to the directory name where the ext. is located
   var extensionSupportedFileTypes = ["mht", "mhtml"];
 
+  console.log("Loading " + extensionID);
+
   var TSCORE = require("tscore");
   var MailParser = require("ext/viewerMHTML/mailparser/mailparser.min").MailParser;
- 
   var currentFilePath;
   var currentContent;
   var $containerElement;
   var contentIFrame;
-
   var extensionDirectory = TSCORE.Config.getExtensionPath() + "/" + extensionID;
 
   function init(filePath, containerElementID) {
@@ -65,17 +63,17 @@ define(function(require, exports, module) {
       });
     };
     contentIFrame.src = extensionDirectory + "/index.html";
-  };
+  }
 
   function setFileType() {
 
     console.log("setFileType not supported on this extension");
-  };
+  }
 
   function viewerMode(isViewerMode) {
 
     // set readonly
-  };
+  }
 
   function setContent(content) {
     currentContent = content;
@@ -95,7 +93,7 @@ define(function(require, exports, module) {
           });
       });
     }
-  };
+  }
 
   function getContent() {
     TSCORE.IO.getFileContentPromise(file).then(function(buf) {
@@ -114,7 +112,7 @@ define(function(require, exports, module) {
     }, function(err) {
       console.log(err);
     });
-  };
+  }
 
   exports.init = init;
   exports.getContent = getContent;
