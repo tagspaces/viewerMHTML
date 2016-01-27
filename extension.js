@@ -1,16 +1,13 @@
-/* Copyright (c) 2012-2015 The TagSpaces Authors. All rights reserved.
- * Use of this source code is governed by a AGPL3 license that
- * can be found in the LICENSE file. */
+/* Copyright (c) 2013-2016 The TagSpaces Authors.
+ * Use of this source code is governed by the MIT license which can be found in the LICENSE.txt file. */
 
 define(function(require, exports, module) {
   "use strict";
 
   console.log("Loading viewerMHTML");
 
-  exports.id = "viewerMHTML"; // ID should be equal to the directory name where the ext. is located
-  exports.title = "URL Viewer";
-  exports.type = "editor";
-  exports.supportedFileTypes = ["mht", "mhtml"];
+  var extensionID = "viewerMHTML"; // ID should be equal to the directory name where the ext. is located
+  var extensionSupportedFileTypes = ["mht", "mhtml"];
 
   var TSCORE = require("tscore");
   var MailParser = require("ext/viewerMHTML/mailparser/mailparser.min").MailParser;
@@ -20,14 +17,12 @@ define(function(require, exports, module) {
   var $containerElement;
   var contentIFrame;
 
-  var extensionDirectory = TSCORE.Config.getExtensionPath() + "/" + exports.id;
+  var extensionDirectory = TSCORE.Config.getExtensionPath() + "/" + extensionID;
 
-  exports.init = function(filePath, containerElementID) {
+  function init(filePath, containerElementID) {
     console.log("Initalization MHTML Viewer...");
     $containerElement = $('#' + containerElementID);
     currentFilePath = filePath;
-
-    //exports.getTextContent(filePath);
 
     var filePathURI;
     if (isCordova || isWeb) {
@@ -55,15 +50,15 @@ define(function(require, exports, module) {
       );
 
     var extUI = extUITmpl({
-      id: exports.id
+      id: extensionID
     });
     $containerElement.append(extUI);
 
-    $("#" + exports.id + "OpenExternallyButton").click(function() {
+    $("#" + extensionID + "OpenExternallyButton").click(function() {
       window.open(filePathURI, '_blank');
     });
 
-    contentIFrame = document.getElementById(exports.id + "Viewer");
+    contentIFrame = document.getElementById(extensionID + "Viewer");
     contentIFrame.onload = function() {
       TSCORE.IO.loadTextFilePromise(currentFilePath).then(exports.setContent, function(err) {
         console.warn("Error loading content...");
@@ -72,24 +67,26 @@ define(function(require, exports, module) {
     contentIFrame.src = extensionDirectory + "/index.html";
   };
 
-  exports.setFileType = function() {
+  function setFileType() {
+
     console.log("setFileType not supported on this extension");
   };
 
-  exports.viewerMode = function(isViewerMode) {
+  function viewerMode(isViewerMode) {
+
     // set readonly
   };
 
-  exports.setContent = function(content) {
+  function setContent(content) {
     currentContent = content;
 
-    var contentWindow = document.getElementById(exports.id + "Viewer").contentWindow;
+    var contentWindow = document.getElementById(extensionID + "Viewer").contentWindow;
 
     if (typeof contentWindow.setContent === "function") {
       contentWindow.MailParser = MailParser;
       contentWindow.setContent(currentContent, function(obj) {
-        $("#" + exports.id + "Meta").append("saved on " + obj.headers.date);
-        $("#" + exports.id + "OpenURLButton")
+        $("#" + extensionID + "Meta").append("saved on " + obj.headers.date);
+        $("#" + extensionID + "OpenURLButton")
           .append(obj.contentLocation)
           .attr("href", obj.contentLocation)
           .show()
@@ -100,10 +97,7 @@ define(function(require, exports, module) {
     }
   };
 
-  exports.getContent = function() {};
-
-  exports.getTextContent = function(file, result) {
-   
+  function getContent() {
     TSCORE.IO.getFileContentPromise(file).then(function(buf) {
       var mailparser = new MailParser();
 
@@ -116,10 +110,16 @@ define(function(require, exports, module) {
 
       mailparser.write(text);
       mailparser.end();
-     
+
     }, function(err) {
       console.log(err);
     });
   };
+
+  exports.init = init;
+  exports.getContent = getContent;
+  exports.setContent = setContent;
+  exports.viewerMode = viewerMode;
+  exports.setFileType = setFileType;
 
 });
