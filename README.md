@@ -1,33 +1,31 @@
-![tagspaces logo](https://raw.github.com/uggrock/tagspaces/master/data/assets/icon96.png) 
-## Introduction
-
-`TagSpaces` is a open source application for managing of your local files. You can find more information about it on its website [tagspaces.org](http://tagspaces.org/). For a quick TagSpaces introduction please see this [video](https://www.youtube.com/embed/CJ2hYU6U-C8) on youtube.
-
-- [TagSpaces blog](http://tagspaces.org/blog/) for any news about tagspaces
-- [the issues tracker](https://github.com/uggrock/tagspaces/issues) for developer support requests
-- [the TagSpaces wiki](https://github.com/uggrock/tagspaces/wiki) for end-users and implementors (currently not really used)
-
-To get updates you can:
-- Subscribe to GitHub updates by clicking the "watch" button up the top right of this page.
-- Subscribe to RSS feed updates for the [master branch](https://github.com/uggrock/tagspaces/commits/master.atom)
+A TagSpaces extension allowing you to open MHTML and EML files.
 
 ## Features
 
-* **view MHT or MHTML files:**
+* ...
+
+## Used libraries
+This extension thankfully relays on the following great project(s):
+
+* [mailparser](https://github.com/andris9/mailparser)
+
+## Installation
+
+This extensions is packaged with any new version of TagSpaces
+
+## Source code
+
+The source code of this extension is freely available on [github.com/tagspaces/viewerMHTML](https://github.com/tagspaces/viewerMHTML/)
+
+## Development
+
+If you want to extend this extensions, please follow our general [extension development guide](http://tagspaces.org/documentation/extension-development-guide)
 
 ## Screenshots
 
-![Screen of the extension in action](http://www.tagspaces.org/content/v1.7/tagspaces-mhtml-viewer.png)
-
-## Documentation
+![Screenshot of the viewerMHTML](http://tagspaces.org/extensions/editorHTML/viewerMHTML-screenshot.png)
 
 ## License
 
-MIT
+[MIT](https://github.com/tagspaces/viewerMHTML/blob/master/LICENSE.txt)
 
-## Feeds
-- Subscribe to RSS feed updates for the [tagspaces blog](http://tagspaces.org/blog/feed.xml)
-- Subscribe to RSS feed updates for the [master branch](https://github.com/uggrock/tagspace/commits/master.atom)
-
-- - -
-This files is created and edited in `TagSpaces`, using the `viewerMD` and `[editorText]()` extensions.
