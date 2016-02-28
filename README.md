@@ -23,7 +23,7 @@ If you want to extend this extensions, please follow our general [extension deve
 
 ## Screenshots
 
-![Screenshot of the viewerMHTML](http://tagspaces.org/extensions/editorHTML/viewerMHTML-screenshot.png)
+![Screenshot of the viewerMHTML](http://tagspaces.org/extensions/viewerMHTML/viewerMHTML-screenshot.png)
 
 ## License
 
