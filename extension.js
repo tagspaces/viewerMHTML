@@ -89,7 +89,7 @@ define(function(require, exports, module) {
           .attr("href", obj.contentLocation)
           .show()
           .click(function() {
-            TSCORE.openLinkExternally($(this).attr("href"));
+            TSCORE.IO.openFile($(this).attr("href"));
           });
       });
     }
