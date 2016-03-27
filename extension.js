@@ -86,7 +86,7 @@ define(function(require, exports, module) {
         $("#" + extensionID + "Meta").append("saved on " + obj.headers.date);
         $("#" + extensionID + "OpenURLButton")
           .append(obj.contentLocation)
-          .attr("href", obj.contentLocation)
+          .attr("href", obj.contentLocation.trim())
           .show()
           .click(function() {
             TSCORE.IO.openFile($(this).attr("href"));
