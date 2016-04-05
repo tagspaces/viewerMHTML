@@ -56,6 +56,23 @@ define(function(require, exports, module) {
       window.open(filePathURI, '_blank');
     });
 
+    
+    TSCORE.IO.loadTextFilePromise(filePath).then(function(content) {
+      exports.setContent(content);
+     
+    }, 
+    function(error) {
+      TSCORE.hideLoadingAnimation();
+      TSCORE.showAlertDialog("Loading " + filePath + " failed.");
+      console.error("Loading file " + filePath + " failed " + error);
+    });
+
+
+//==================================================
+
+//==================================================
+
+    /* 
     contentIFrame = document.getElementById(extensionID + "Viewer");
     contentIFrame.onload = function() {
       TSCORE.IO.loadTextFilePromise(currentFilePath).then(exports.setContent, function(err) {
@@ -63,6 +80,7 @@ define(function(require, exports, module) {
       });
     };
     contentIFrame.src = extensionDirectory + "/index.html";
+    */
   }
 
   function setFileType() {
@@ -82,7 +100,7 @@ define(function(require, exports, module) {
 
     if (typeof contentWindow.setContent === "function") {
       contentWindow.MailParser = MailParser;
-      contentWindow.setContent(currentContent, function(obj) {
+      contentWindow.setContent(currentContent, function(obj) {        
         $("#" + extensionID + "Meta").append("saved on " + obj.headers.date);
         $("#" + extensionID + "OpenURLButton")
           .append(obj.contentLocation)
@@ -92,6 +110,7 @@ define(function(require, exports, module) {
             TSCORE.IO.openFile($(this).attr("href"));
           });
       });
+      contentWindow.addMenuEvents();
     }
   }
 
