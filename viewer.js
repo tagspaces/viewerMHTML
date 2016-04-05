@@ -2,6 +2,7 @@
  * Use of this source code is governed by the MIT license which can be found in the LICENSE.txt file. */
 
 /* global MailParser, DOMPurify */
+ /* globals marked */
 
 "use strict";
 
@@ -142,9 +143,9 @@ function addMenuEvents() {
 
   $("#printButton").on("click", function() {
     $(".dropdown-menu").dropdown('toggle');
-    try{
+    try {
       window.print();
-    }catch(exc){
+    } catch (exc) {
       console.log("Error: " + exc);
     }
   });
