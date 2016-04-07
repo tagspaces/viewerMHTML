@@ -45,8 +45,8 @@ function Init(filePathURI, objectlocation) {
   function getParameterByName(name) {
     name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
     var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
-      results = regex.exec(location.search);
-    return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+    results = regex.exec(window.parent.location.search);
+    return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " ").replace("-","_"));
   }
 
   var locale = getParameterByName("locale");
@@ -59,6 +59,9 @@ function Init(filePathURI, objectlocation) {
   isWeb = parent.isWeb;
 
   
+  $(document).on('drop dragend dragenter dragover', function(event) {
+    event.preventDefault();
+  });
 
   $('#aboutExtensionModal').on('show.bs.modal', function() {
     $.ajax({
@@ -66,7 +69,7 @@ function Init(filePathURI, objectlocation) {
       type: 'GET'
     })
     .done(function(mdData) {
-      console.log("DATA: " + mdData);
+      //console.log("DATA: " + mdData);
       $("#aboutExtensionModal .modal-body").html(marked(mdData));
     })
     .fail(function(data) {
