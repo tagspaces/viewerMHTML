@@ -16,13 +16,13 @@ define(function(require, exports, module) {
   var $containerElement;
   var contentIFrame;
   var extensionDirectory = TSCORE.Config.getExtensionPath() + "/" + extensionID;
+  var filePathURI;
 
   function init(filePath, containerElementID) {
     console.log("Initalization MHTML Viewer...");
     $containerElement = $('#' + containerElementID);
     currentFilePath = filePath;
-
-    var filePathURI;
+    
     if (isCordova || isWeb) {
       filePathURI = filePath;
     } else {
@@ -47,14 +47,22 @@ define(function(require, exports, module) {
       '</div>'
       );
 
+    var extUITmpl = Handlebars.compile(
+      '<div class="flexLayoutVertical" style="width: 100%;">' +
+        '<p style="margin: 5px; font-size: 12px;">Preview of the document <span id="{{id}}Meta"></span></p>' +
+        '<iframe id="{{id}}Viewer" sandbox="allow-same-origin allow-scripts allow-modals" style="background-color: white; border: 0px;" class="flexMaxHeight" nwdisable="" src="ext/viewerMHTML/index.html"></iframe>' +
+      '</div>'
+      );
+
+
     var extUI = extUITmpl({
       id: extensionID
     });
     $containerElement.append(extUI);
 
-    $("#" + extensionID + "OpenExternallyButton").click(function() {
-      window.open(filePathURI, '_blank');
-    });
+    //$("#" + extensionID + "OpenExternallyButton").click(function() {
+    //  window.open(filePathURI, '_blank');
+    //});
 
     
     TSCORE.IO.loadTextFilePromise(filePath).then(function(content) {
@@ -100,8 +108,12 @@ define(function(require, exports, module) {
 
     if (typeof contentWindow.setContent === "function") {
       contentWindow.MailParser = MailParser;
-      contentWindow.setContent(currentContent, function(obj) {        
-        $("#" + extensionID + "Meta").append("saved on " + obj.headers.date);
+      contentWindow.setContent(currentContent, function(obj) {
+        $("#" + extensionID + "Meta").append("saved on " + obj.headers.date);        
+        /*
+        $("#" + extensionID + "OpenExternallyButton").click(function() {
+          window.open(filePathURI, '_blank');
+        });        
         $("#" + extensionID + "OpenURLButton")
           .append(obj.contentLocation)
           .attr("href", obj.contentLocation.trim())
@@ -109,8 +121,10 @@ define(function(require, exports, module) {
           .click(function() {
             TSCORE.IO.openFile($(this).attr("href"));
           });
+         */
+        contentWindow.addMenuEvents(TSCORE, filePathURI, obj); 
       });
-      contentWindow.addMenuEvents();
+      
     }
   }
 

@@ -34,7 +34,7 @@ function setContent(content, done) {
 }
 
 
-function addMenuEvents() {
+function addMenuEvents(TSCORE, filePathURI, objectlocation) {
   var isCordova;
   var isWin;
   var isWeb;
@@ -153,6 +153,19 @@ function addMenuEvents() {
   if (isCordova) {
     $("#printButton").hide();
   }
+
+  
+  $("#viewerMHTMLOpenExternallyButton").click(function() {      
+    //var msg = {command: "openLinkExternally", link : filePathURI};
+    //window.parent.postMessage(JSON.stringify(msg), "*");
+    window.parent.open(filePathURI, '_blank');      
+  });
+  
+    
+  $("#viewerMHTMLOpenURLButton").click(function() {
+    //console.log("#viewerMHTMLOpenURLButton click");
+    TSCORE.IO.openFile(objectlocation.contentLocation.trim());
+  });
 
   
   // Init internationalization
