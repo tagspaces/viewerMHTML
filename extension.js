@@ -34,21 +34,6 @@ define(function(require, exports, module) {
 
     var extUITmpl = Handlebars.compile(
       '<div class="flexLayoutVertical" style="width: 100%;">' +
-        '<div class="btn-group" style="margin: 5px;">' +
-          '<button class="btn btn-default" id="{{id}}OpenExternallyButton" title="Due security restrictions, opening of MHT(ML) files in iframes has been disabled. Use this button to open the file in a new TagSpaces window.">' +
-            '<i class="fa fa-desktop"></i>&nbsp;Open in new window' +
-          '</button>' +
-          '<button class="btn btn-default" title="" id="{{id}}OpenURLButton">' +
-            '<i class="fa fa-external-link"></i>&nbsp;Open externaly:' +
-          '</button>' +
-        '</div>' +
-        '<p style="margin: 5px; font-size: 12px;">Preview of the document <span id="{{id}}Meta"></span></p>' +
-        '<iframe id="{{id}}Viewer" sandbox="allow-same-origin allow-scripts allow-modals" style="background-color: white; border: 0px;" class="flexMaxHeight" nwdisable="" src="ext/viewerMHTML/index.html"></iframe>' +
-      '</div>'
-      );
-
-    var extUITmpl = Handlebars.compile(
-      '<div class="flexLayoutVertical" style="width: 100%;">' +
         '<p style="margin: 5px; font-size: 12px;">Preview of the document <span id="{{id}}Meta"></span></p>' +
         '<iframe id="{{id}}Viewer" sandbox="allow-same-origin allow-scripts allow-modals" style="background-color: white; border: 0px;" class="flexMaxHeight" nwdisable="" src="ext/viewerMHTML/index.html"></iframe>' +
       '</div>'
@@ -74,30 +59,13 @@ define(function(require, exports, module) {
       TSCORE.showAlertDialog("Loading " + filePath + " failed.");
       console.error("Loading file " + filePath + " failed " + error);
     });
-
-
-//==================================================
-
-//==================================================
-
-    /* 
-    contentIFrame = document.getElementById(extensionID + "Viewer");
-    contentIFrame.onload = function() {
-      TSCORE.IO.loadTextFilePromise(currentFilePath).then(exports.setContent, function(err) {
-        console.warn("Error loading content...");
-      });
-    };
-    contentIFrame.src = extensionDirectory + "/index.html";
-    */
   }
 
   function setFileType() {
-
     console.log("setFileType not supported on this extension");
   }
 
   function viewerMode(isViewerMode) {
-
     // set readonly
   }
 
@@ -110,18 +78,6 @@ define(function(require, exports, module) {
       contentWindow.MailParser = MailParser;
       contentWindow.setContent(currentContent, function(obj) {
         $("#" + extensionID + "Meta").append("saved on " + obj.headers.date);        
-        /*
-        $("#" + extensionID + "OpenExternallyButton").click(function() {
-          window.open(filePathURI, '_blank');
-        });        
-        $("#" + extensionID + "OpenURLButton")
-          .append(obj.contentLocation)
-          .attr("href", obj.contentLocation.trim())
-          .show()
-          .click(function() {
-            TSCORE.IO.openFile($(this).attr("href"));
-          });
-         */
         contentWindow.addMenuEvents(TSCORE, filePathURI, obj); 
       });
       
