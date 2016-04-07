@@ -78,7 +78,7 @@ define(function(require, exports, module) {
       contentWindow.MailParser = MailParser;
       contentWindow.setContent(currentContent, function(obj) {
         $("#" + extensionID + "Meta").append("saved on " + obj.headers.date);        
-        contentWindow.addMenuEvents(TSCORE, filePathURI, obj); 
+        contentWindow.Init(filePathURI, obj); 
       });
       
     }

@@ -34,7 +34,7 @@ function setContent(content, done) {
 }
 
 
-function addMenuEvents(TSCORE, filePathURI, objectlocation) {
+function Init(filePathURI, objectlocation) {
   var isCordova;
   var isWin;
   var isWeb;
@@ -164,7 +164,9 @@ function addMenuEvents(TSCORE, filePathURI, objectlocation) {
     
   $("#viewerMHTMLOpenURLButton").click(function() {
     //console.log("#viewerMHTMLOpenURLButton click");
-    TSCORE.IO.openFile(objectlocation.contentLocation.trim());
+    //TSCORE.IO.openFile(objectlocation.contentLocation.trim());
+    var msg = {command: "openLinkExternally", link : objectlocation.contentLocation.trim()};
+    window.parent.postMessage(JSON.stringify(msg), "*");    
   });
 
   
