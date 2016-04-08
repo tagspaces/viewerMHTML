@@ -35,7 +35,7 @@ define(function(require, exports, module) {
     var extUITmpl = Handlebars.compile(
       '<div class="flexLayoutVertical" style="width: 100%;">' +
         '<p style="margin: 5px; font-size: 12px;">Preview of the document <span id="{{id}}Meta"></span></p>' +
-        '<iframe id="{{id}}Viewer" sandbox="allow-same-origin allow-scripts allow-modals" style="background-color: white; border: 0px;" class="flexMaxHeight" nwdisable="" src="ext/viewerMHTML/index.html"></iframe>' +
+        '<iframe id="{{id}}Viewer" sandbox="allow-same-origin allow-scripts allow-modals" style="background-color: white; border: 0px;" class="flexMaxHeight" nwdisable="" src="ext/viewerMHTML/index.html?&locale=' + TSCORE.currentLanguage+'"></iframe>' +
       '</div>'
       );
 

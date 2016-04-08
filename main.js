@@ -45,11 +45,13 @@ function Init(filePathURI, objectlocation) {
   function getParameterByName(name) {
     name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
     var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
-    results = regex.exec(window.parent.location.search);
-    return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " ").replace("-","_"));
+    results = regex.exec(window.location.search);
+    return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
   }
 
   var locale = getParameterByName("locale");
+  
+  //console.warn("locale:" + locale);
 
   var extSettings;
   loadExtSettings();
@@ -70,13 +72,34 @@ function Init(filePathURI, objectlocation) {
     })
     .done(function(mdData) {
       //console.log("DATA: " + mdData);
-      $("#aboutExtensionModal .modal-body").html(marked(mdData));
+      if (marked) {
+        var modalBody = $("#aboutExtensionModal .modal-body");
+        modalBody.html(marked(mdData, { sanitize: true }));
+        handleLinks(modalBody);
+      } else {
+        console.log("markdown to html transformer not found");
+      } 
     })
     .fail(function(data) {
       console.warn("Loading file failed " + data);
     });
   });
 
+
+  function handleLinks($element) {
+    $element.find("a[href]").each(function() {
+      var currentSrc = $(this).attr("href");
+      var path;
+      $(this).bind('click', function(e) {
+        e.preventDefault();
+        if (path) {
+          currentSrc = encodeURIComponent(path);
+        }
+        var msg = {command: "openLinkExternally", link : currentSrc};
+        window.parent.postMessage(JSON.stringify(msg), "*");
+      });
+    });
+  }
 
   $htmlContent = $("#mhtmlViewer");
   
