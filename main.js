@@ -138,8 +138,13 @@ function Init(filePathURI, objectlocation) {
     saveExtSettings();
   });
 
+  //hide zoom operation menu items because they don't influence on the style
+  $("#zoomInButton").hide();
+  $("#zoomOutButton").hide();
+  $("#zoomResetButton").hide();
+
   $("#zoomInButton").bind('click', function() {
-    console.log("#zoomInButton");
+    //console.log("#zoomInButton click");
     currentZoomState++;
     if (currentZoomState >= zoomSteps.length) {
       currentZoomState = 6;
@@ -150,7 +155,7 @@ function Init(filePathURI, objectlocation) {
   });
 
   $("#zoomOutButton").bind('click', function() { 
-    console.log("#zoomOutButton");
+    //console.log("#zoomOutButton  click");
     currentZoomState--;
     if (currentZoomState < 0) {
       currentZoomState = 0;
