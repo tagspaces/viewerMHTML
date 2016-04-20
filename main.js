@@ -33,7 +33,6 @@ function setContent(content, done) {
   mhtparser.end();
 }
 
-
 function Init(filePathURI, objectlocation) {
   var isCordova;
   var isWin;
@@ -60,7 +59,6 @@ function Init(filePathURI, objectlocation) {
   isWin = parent.isWin;
   isWeb = parent.isWeb;
 
-  
   $(document).on('drop dragend dragenter dragover', function(event) {
     event.preventDefault();
   });
@@ -133,6 +131,7 @@ function Init(filePathURI, objectlocation) {
 
   $("#resetStyleButton").bind('click', function() {
     currentStyleIndex = 0;
+    //currentZoomState = 5;
     $htmlContent.removeClass();
     $htmlContent.addClass('markdown ' + styles[currentStyleIndex] + " " + zoomSteps[currentZoomState]);
     saveExtSettings();
