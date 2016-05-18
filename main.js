@@ -33,14 +33,13 @@ function setContent(content, done) {
   mhtparser.end();
 }
 
-function Init(filePathURI, objectlocation) {
+function init(filePathURI, objectlocation) {
   var isCordova;
   var isWin;
   var isWeb;
   
   var $htmlContent;  
   
-  //alert("document.ready");
   function getParameterByName(name) {
     name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
     var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
@@ -49,8 +48,6 @@ function Init(filePathURI, objectlocation) {
   }
 
   var locale = getParameterByName("locale");
-  
-  //console.warn("locale:" + locale);
 
   var extSettings;
   loadExtSettings();
@@ -83,7 +80,6 @@ function Init(filePathURI, objectlocation) {
     });
   });
 
-
   function handleLinks($element) {
     $element.find("a[href]").each(function() {
       var currentSrc = $(this).attr("href");
@@ -101,9 +97,6 @@ function Init(filePathURI, objectlocation) {
 
   $htmlContent = $("#mhtmlViewer");
   
-  //alert("step-3-");
-  //console.log("mhtmlViewer:" + (document.getElementById("mhtmlViewer")==null));
-
   var styles = ['', 'solarized-dark', 'github', 'metro-vibes', 'clearness', 'clearness-dark'];
   var currentStyleIndex = 0;
   if (extSettings && extSettings.styleIndex) {
@@ -119,7 +112,7 @@ function Init(filePathURI, objectlocation) {
   $htmlContent.removeClass();
   $htmlContent.addClass('markdown ' + styles[currentStyleIndex] + " " + zoomSteps[currentZoomState]);
 
-  $("#changeStyleButton").bind('click', function() {
+  $("#changeStyleButton").on('click', function() {
     currentStyleIndex = currentStyleIndex + 1;
     if (currentStyleIndex >= styles.length) {
       currentStyleIndex = 0;
@@ -129,7 +122,7 @@ function Init(filePathURI, objectlocation) {
     saveExtSettings();
   });
 
-  $("#resetStyleButton").bind('click', function() {
+  $("#resetStyleButton").on('click', function() {
     currentStyleIndex = 0;
     //currentZoomState = 5;
     $htmlContent.removeClass();
@@ -142,7 +135,7 @@ function Init(filePathURI, objectlocation) {
   $("#zoomOutButton").hide();
   $("#zoomResetButton").hide();
 
-  $("#zoomInButton").bind('click', function() {
+  $("#zoomInButton").on('click', function() {
     //console.log("#zoomInButton click");
     currentZoomState++;
     if (currentZoomState >= zoomSteps.length) {
@@ -153,7 +146,7 @@ function Init(filePathURI, objectlocation) {
     saveExtSettings();
   });
 
-  $("#zoomOutButton").bind('click', function() { 
+  $("#zoomOutButton").on('click', function() {
     //console.log("#zoomOutButton  click");
     currentZoomState--;
     if (currentZoomState < 0) {
@@ -164,7 +157,7 @@ function Init(filePathURI, objectlocation) {
     saveExtSettings();
   });
 
-  $("#zoomResetButton").bind('click', function() {
+  $("#zoomResetButton").on('click', function() {
     currentZoomState = 3;
     $htmlContent.removeClass();
     $htmlContent.addClass('markdown ' + styles[currentStyleIndex] + " " + zoomSteps[currentZoomState]);
@@ -172,33 +165,25 @@ function Init(filePathURI, objectlocation) {
   });
 
   $("#printButton").on("click", function() {
-    $(".dropdown-menu").dropdown('toggle');
-    try {
-      window.print();
-    } catch (exc) {
-      console.log("Error: " + exc);
-    }
+    window.print();
+  });
+
+  $("#aboutButton").on("click", function(e) {
+    $("#aboutExtensionModal").modal({show: true});
   });
 
   if (isCordova) {
     $("#printButton").hide();
   }
 
-  
-  $("#viewerMHTMLOpenExternallyButton").click(function() {      
-    //var msg = {command: "openLinkExternally", link : filePathURI};
-    //window.parent.postMessage(JSON.stringify(msg), "*");
-    window.parent.open(filePathURI, '_blank');      
+  $("#openInNewWindowButton").click(function() {
+    window.parent.open(filePathURI, '_blank');
   });
-  
-    
-  $("#viewerMHTMLOpenURLButton").click(function() {
-    //console.log("#viewerMHTMLOpenURLButton click");
-    //TSCORE.IO.openFile(objectlocation.contentLocation.trim());
+
+  $("#openURLButton").click(function() {
     var msg = {command: "openLinkExternally", link : objectlocation.contentLocation.trim()};
     window.parent.postMessage(JSON.stringify(msg), "*");    
   });
-
   
   // Init internationalization
   $.i18n.init({
@@ -221,6 +206,4 @@ function Init(filePathURI, objectlocation) {
   function loadExtSettings() {
     extSettings = JSON.parse(localStorage.getItem("viewerMHTMLSettings"));
   }
-  
-
 }

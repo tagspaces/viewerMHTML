@@ -45,14 +45,9 @@ define(function(require, exports, module) {
     });
     $containerElement.append(extUI);
 
-    //$("#" + extensionID + "OpenExternallyButton").click(function() {
-    //  window.open(filePathURI, '_blank');
-    //});
 
-    
     TSCORE.IO.loadTextFilePromise(filePath).then(function(content) {
       exports.setContent(content);
-     
     }, 
     function(error) {
       TSCORE.hideLoadingAnimation();
@@ -78,7 +73,7 @@ define(function(require, exports, module) {
       contentWindow.MailParser = MailParser;
       contentWindow.setContent(currentContent, function(obj) {
         $("#" + extensionID + "Meta").append("saved on " + obj.headers.date);        
-        contentWindow.Init(filePathURI, obj); 
+        contentWindow.init(filePathURI, obj);
       });
       
     }
