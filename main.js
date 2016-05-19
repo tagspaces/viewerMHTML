@@ -6,7 +6,7 @@
 
 "use strict";
 
-function setContent(content, done) {
+function setContent(content, filePathURI) {
   //console.log("MHTML Content: "+content);
   var mhtparser = new MailParser();
   mhtparser.on("end", function(mail_object) {
@@ -25,7 +25,9 @@ function setContent(content, done) {
       window.parent.postMessage(JSON.stringify(msg), "*");
     }).css("cursor", "default");
 
-    done(mail_object);
+    $("#fileMeta").append("saved on " + mail_object.headers.date);
+
+    init(mail_object, filePathURI);
 
   });
 

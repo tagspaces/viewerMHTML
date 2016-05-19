@@ -9,6 +9,7 @@
   <script type="text/javascript" src="../../libs/bootstrap/dist/js/bootstrap.min.js"></script>
   <script type="text/javascript" src="../../libs/i18next/i18next.min.js"></script>
   <script type="text/javascript" src="../../libs/marked/marked.min.js"></script>
+  <!--script type="text/javascript" src="mailparser/mailparser.min.js"></script-->
   <script type="text/javascript" src="main.js"></script>
   <link rel="stylesheet" href="extension.css"/>
   <link rel="stylesheet" href="css/markdown.css"/>
@@ -19,6 +20,9 @@
   <link rel="stylesheet" href="css/clearness-dark.css"/>  
 </head>
 <body>
+<div class="flexLayoutVertical" style="width: 100%;">
+  <p style="margin: 5px; font-size: 12px;">Preview of the document <span id="fileMeta"></span></p>
+</div>
 <div id="mhtmlViewer">
 <div style="position: absolute; top:0; left: 0; right: 0; bottom: 0; background-color: #1DD19F;">
   <div style="width:60px; height:60px; position:absolute;left:50%;top:50%;margin:-30px 0 0 -30px;">
