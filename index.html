@@ -9,7 +9,10 @@
   <script type="text/javascript" src="../../libs/bootstrap/dist/js/bootstrap.min.js"></script>
   <script type="text/javascript" src="../../libs/i18next/i18next.min.js"></script>
   <script type="text/javascript" src="../../libs/marked/marked.min.js"></script>
+  <script type="text/javascript" src="../../libs/mousetrap/mousetrap.min.js"></script>
   <script type="text/javascript" src="main.js"></script>
+  <script type="text/javascript" src="common.js"></script>
+  <script type="text/javascript" src="lib/jquery.highlight.js"></script>
   <link rel="stylesheet" href="../../assets/tagspaces.css"/>
   <link rel="stylesheet" href="extension.css"/>
   <link rel="stylesheet" href="css/markdown.css"/>
@@ -20,14 +23,25 @@
   <link rel="stylesheet" href="css/clearness-dark.css"/>  
 </head>
 <body>
-<div id="mhtmlViewer">
-<div style="position: absolute; top:0; left: 0; right: 0; bottom: 0; background-color: #1DD19F;">
-  <div style="width:60px; height:60px; position:absolute;left:50%;top:50%;margin:-30px 0 0 -30px;">
-    <div class="sk-spinner sk-rotating-plane"></div>
+<div id="searchToolbar" style="display: none;">
+  <div class="flexLayout">
+    <button class="btn btn-link" id="clearSearchExtButton" data-i18n="[title]ns.viewerMHTML:cancelSearch">
+      <i class="fa fa-lg fa-eraser"></i>
+    </button>
+    <input class="flexMaxWidth" id="searchBox" type="text" data-i18n="[placeholder]ns.viewerMHTML:findInDocument">
+    </button>
+    <button class="btn btn-link" id="searchExtButton" data-i18n="[title]ns.viewerMHTML:startSearch">
+      <i class="fa fa-lg fa-binoculars"></i>
+    </button>
   </div>
 </div>
+<div id="mhtmlViewer">
+  <div style="position: absolute; top:0; left: 0; right: 0; bottom: 0; background-color: #1DD19F;">
+    <div style="width:60px; height:60px; position:absolute;left:50%;top:50%;margin:-30px 0 0 -30px;">
+      <div class="sk-spinner sk-rotating-plane"></div>
+    </div>
+  </div>
 </div>
-
 <div class="btn-group dropup extMainMenu">
   <button type="button" class="btn roundButton dropdown-toggle viewerMainMenuButton" data-toggle="dropdown">
     <i class="fa fa-ellipsis-v fa-2x"></i>
@@ -36,6 +50,10 @@
     <li class="dropdown-header">
       <button class="close">&times;</button>&nbsp;
     </li>
+    <li class="divider"></li>
+    <li><a id="findInFile">
+      <i class="fa fa-binoculars fa-lg fa-fw"></i>&nbsp;<span data-i18n="ns.viewerMHTML:findInDocument"></span>
+    </a></li>
     <li class="divider"></li>
     <li><a id="changeStyleButton">
       <i class="fa fa-adjust fa-lg fa-fw"></i>&nbsp;<span data-i18n="ns.viewerMHTML:changeTheme"></span>
