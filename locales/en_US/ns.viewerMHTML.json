@@ -7,6 +7,8 @@
   "zoomReset": "Zoom Reset",
   "changeTheme": "Change Theme",
   "resetTheme": "Reset Theme",
+  "openSourceURL": "Open source URL",
+  "openInNewWindow": "Open in new window",
   "print": "Print",
   "about": "About",
   "aboutTitle": "About ViewerMHTML extension",

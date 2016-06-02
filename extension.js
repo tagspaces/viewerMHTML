@@ -12,7 +12,6 @@ define(function(require, exports, module) {
   var TSCORE = require("tscore");
   var MailParser = require("ext/viewerMHTML/mailparser/mailparser.min").MailParser;
   var currentFilePath;
-  var currentContent;
   var $containerElement;
   var contentIFrame;
   var extensionDirectory = TSCORE.Config.getExtensionPath() + "/" + extensionID;
@@ -33,26 +32,21 @@ define(function(require, exports, module) {
     $containerElement.css("background-color", "white");
 
     var extUITmpl = Handlebars.compile(
-      '<div class="flexLayoutVertical" style="width: 100%;">' +
-        '<p style="margin: 5px; font-size: 12px;">Preview of the document <span id="{{id}}Meta"></span></p>' +
-        '<iframe id="{{id}}Viewer" sandbox="allow-same-origin allow-scripts allow-modals" style="background-color: white; border: 0px;" class="flexMaxHeight" nwdisable="" src="ext/viewerMHTML/index.html?&locale=' + TSCORE.currentLanguage + '"></iframe>' +
-      '</div>'
-      );
-
+      '<iframe id="{{id}}Viewer" sandbox="allow-same-origin allow-scripts allow-modals" style="background-color: white; border: 0px;" class="flexMaxHeight" nwdisable="" src="{{extDir}}/index.html?&locale={{lang}}"></iframe>'
+    );
 
     var extUI = extUITmpl({
-      id: extensionID
+      id: extensionID,
+      lang: TSCORE.currentLanguage,
+      extDir: extensionDirectory
     });
     $containerElement.append(extUI);
 
-    //$("#" + extensionID + "OpenExternallyButton").click(function() {
-    //  window.open(filePathURI, '_blank');
-    //});
+    contentIFrame = document.getElementById(extensionID + "Viewer").contentWindow;
+    contentIFrame.MailParser = MailParser;
 
-    
     TSCORE.IO.loadTextFilePromise(filePath).then(function(content) {
       exports.setContent(content);
-     
     }, 
     function(error) {
       TSCORE.hideLoadingAnimation();
@@ -70,22 +64,17 @@ define(function(require, exports, module) {
   }
 
   function setContent(content) {
-    currentContent = content;
-
-    var contentWindow = document.getElementById(extensionID + "Viewer").contentWindow;
-
-    if (typeof contentWindow.setContent === "function") {
-      contentWindow.MailParser = MailParser;
-      contentWindow.setContent(currentContent, function(obj) {
-        $("#" + extensionID + "Meta").append("saved on " + obj.headers.date);        
-        contentWindow.Init(filePathURI, obj); 
-      });
-      
+    if (typeof contentIFrame.setContent === "function" && contentIFrame.MailParser) {
+      contentIFrame.setContent(content, filePathURI);
+    } else {
+      window.setTimeout(function() {
+        contentIFrame.setContent(content, filePathURI);
+      }, 500);
     }
   }
 
   function getContent() {
-    TSCORE.IO.getFileContentPromise(file).then(function(buf) {
+    /*TSCORE.IO.getFileContentPromise(file).then(function(buf) {
       var mailparser = new MailParser();
 
       var text = TSCORE.Utils.arrayBufferToStr(buf);
@@ -100,7 +89,7 @@ define(function(require, exports, module) {
 
     }, function(err) {
       console.log(err);
-    });
+    });*/
   }
 
   exports.init = init;
