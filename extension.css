@@ -1,4 +1,5 @@
-@import '../../assets/extensions.css';
+@import 'libs/extCommons/common.css';
+
 
 #aboutExtensionModal img {
   max-width: 100%;
