@@ -58,45 +58,6 @@ function init(filePathURI, objectlocation) {
   isWin = parent.isWin;
   isWeb = parent.isWeb;
 
-  $(document).on('drop dragend dragenter dragover', function(event) {
-    event.preventDefault();
-  });
-
-  $('#aboutExtensionModal').on('show.bs.modal', function() {
-    $.ajax({
-      url: 'README.md',
-      type: 'GET'
-    })
-    .done(function(mdData) {
-      //console.log("DATA: " + mdData);
-      if (marked) {
-        var modalBody = $("#aboutExtensionModal .modal-body");
-        modalBody.html(marked(mdData, { sanitize: true }));
-        handleLinks(modalBody);
-      } else {
-        console.log("markdown to html transformer not found");
-      } 
-    })
-    .fail(function(data) {
-      console.warn("Loading file failed " + data);
-    });
-  });
-
-  function handleLinks($element) {
-    $element.find("a[href]").each(function() {
-      var currentSrc = $(this).attr("href");
-      var path;
-      $(this).bind('click', function(e) {
-        e.preventDefault();
-        if (path) {
-          currentSrc = encodeURIComponent(path);
-        }
-        var msg = {command: "openLinkExternally", link : currentSrc};
-        window.parent.postMessage(JSON.stringify(msg), "*");
-      });
-    });
-  }
-
   $htmlContent = $("#mhtmlViewer");
   
   var styles = ['', 'solarized-dark', 'github', 'metro-vibes', 'clearness', 'clearness-dark'];
@@ -165,18 +126,7 @@ function init(filePathURI, objectlocation) {
     $htmlContent.addClass('markdown ' + styles[currentStyleIndex] + " " + zoomSteps[currentZoomState]);
     saveExtSettings();
   });
-
-  $("#printButton").on("click", function() {
-    window.print();
-  });
-
-  $("#aboutButton").on("click", function(e) {
-    $("#aboutExtensionModal").modal({show: true});
-  });
-
-  if (isCordova) {
-    $("#printButton").hide();
-  }
+  
 
   $("#openInNewWindowButton").click(function() {
     window.parent.open(filePathURI, '_blank');
