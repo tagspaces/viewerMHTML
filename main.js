@@ -126,7 +126,7 @@ function init(filePathURI, objectlocation) {
     $htmlContent.addClass('markdown ' + styles[currentStyleIndex] + " " + zoomSteps[currentZoomState]);
     saveExtSettings();
   });
-  
+
 
   $("#openInNewWindowButton").click(function() {
     window.parent.open(filePathURI, '_blank');
