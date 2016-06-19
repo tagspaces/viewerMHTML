@@ -27,7 +27,7 @@ function setContent(content, filePathURI) {
 
     $("#fileMeta").append("saved on " + mail_object.headers.date);
 
-    init(mail_object, filePathURI);
+    init(filePathURI, mail_object);
 
   });
 
