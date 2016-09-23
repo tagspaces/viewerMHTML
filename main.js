@@ -12,8 +12,8 @@ function setContent(content, filePathURI) {
   mhtparser.on("end", function(mail_object) {
     //console.log("mail_object:", mail_object);
 
-    var m = /^content-location:(.*$)/im.exec(content); 
-    mail_object.contentLocation = (m.length > 0) ?  m[1] : "not found";
+    var contLocation = /^content-location:(.*$)/im.exec(content);
+    mail_object.contentLocation = (contLocation && contLocation.length > 0) ?  contLocation[1] : "not found";
     var cleanedHTML = DOMPurify.sanitize(mail_object.html);
     
     $("#mhtmlViewer").html(cleanedHTML);
