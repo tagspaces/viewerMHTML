@@ -27,6 +27,19 @@ function setContent(content, filePathURI) {
 
     $("#fileMeta").append("saved on " + mail_object.headers.date);
 
+    var loc = document.location;
+    var uri = {
+      spec: loc.href,
+      //host: loc.host,
+      //prePath: loc.protocol + "//" + loc.host,
+      //scheme: loc.protocol.substr(0, loc.protocol.indexOf(":")),
+      pathBase: loc.protocol + "//" + loc.host + loc.pathname.substr(0, loc.pathname.lastIndexOf("/") + 1)
+    };
+    
+    var documentClone = document.cloneNode(true);
+    var article = new Readability(uri, documentClone).parse();
+    console.debug(article);
+
     init(filePathURI, mail_object);
 
   });
@@ -34,19 +47,6 @@ function setContent(content, filePathURI) {
   mhtparser.write(content);
   console.debug(mhtparser.write(content));
   mhtparser.end();
-
-  var loc = document.location;
-  var uri = {
-    spec: loc.href,
-    //host: loc.host,
-    //prePath: loc.protocol + "//" + loc.host,
-    //scheme: loc.protocol.substr(0, loc.protocol.indexOf(":")),
-    pathBase: loc.protocol + "//" + loc.host + loc.pathname.substr(0, loc.pathname.lastIndexOf("/") + 1)
-  };
-  console.debug(uri);
-
-  var article = new Readability(uri, document).parse();
-  console.debug(article);
 }
 
 function init(filePathURI, objectlocation) {
