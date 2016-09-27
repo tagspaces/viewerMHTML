@@ -35,7 +35,7 @@ function setContent(content, filePathURI) {
       //scheme: loc.protocol.substr(0, loc.protocol.indexOf(":")),
       pathBase: loc.protocol + "//" + loc.host + loc.pathname.substr(0, loc.pathname.lastIndexOf("/") + 1)
     };
-    
+
     var documentClone = document.cloneNode(true);
     var article = new Readability(uri, documentClone).parse();
     console.debug(article);
@@ -45,7 +45,6 @@ function setContent(content, filePathURI) {
   });
 
   mhtparser.write(content);
-  console.debug(mhtparser.write(content));
   mhtparser.end();
 }
 
