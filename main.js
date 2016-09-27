@@ -2,7 +2,7 @@
  * Use of this source code is governed by the MIT license which can be found in the LICENSE.txt file. */
 
 /* global define MailParser, DOMPurify, Readability */
-/* globals marked, Readability */
+/* globals marked */
 
 "use strict";
 
@@ -36,21 +36,17 @@ function setContent(content, filePathURI) {
   mhtparser.end();
 
   var loc = document.location;
-  console.debug(loc);
-
   var uri = {
     spec: loc.href,
-    host: loc.host,
-    prePath: loc.protocol + "//" + loc.host,
-    scheme: loc.protocol.substr(0, loc.protocol.indexOf(":")),
+    //host: loc.host,
+    //prePath: loc.protocol + "//" + loc.host,
+    //scheme: loc.protocol.substr(0, loc.protocol.indexOf(":")),
     pathBase: loc.protocol + "//" + loc.host + loc.pathname.substr(0, loc.pathname.lastIndexOf("/") + 1)
   };
   console.debug(uri);
-  var documentClone = document.cloneNode(true);
-  console.debug(document);
-  var article = new Readability(uri, document);
-  console.debug(article);
 
+  var article = new Readability(uri, document).parse();
+  console.debug(article);
 }
 
 function init(filePathURI, objectlocation) {
