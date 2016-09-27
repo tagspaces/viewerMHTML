@@ -1,8 +1,8 @@
 /* Copyright (c) 2013-2016 The TagSpaces Authors.
  * Use of this source code is governed by the MIT license which can be found in the LICENSE.txt file. */
 
-/* global MailParser, DOMPurify */
-/* globals marked */
+/* global define MailParser, DOMPurify, Readability */
+/* globals marked, Readability */
 
 "use strict";
 
@@ -15,7 +15,7 @@ function setContent(content, filePathURI) {
     var contLocation = /^content-location:(.*$)/im.exec(content);
     mail_object.contentLocation = (contLocation && contLocation.length > 0) ?  contLocation[1] : "not found";
     var cleanedHTML = DOMPurify.sanitize(mail_object.html);
-    
+
     $("#mhtmlViewer").html(cleanedHTML);
 
     // making all links open in the user default browser
@@ -32,7 +32,25 @@ function setContent(content, filePathURI) {
   });
 
   mhtparser.write(content);
+  console.debug(mhtparser.write(content));
   mhtparser.end();
+
+  var loc = document.location;
+  console.debug(loc);
+
+  var uri = {
+    spec: loc.href,
+    host: loc.host,
+    prePath: loc.protocol + "//" + loc.host,
+    scheme: loc.protocol.substr(0, loc.protocol.indexOf(":")),
+    pathBase: loc.protocol + "//" + loc.host + loc.pathname.substr(0, loc.pathname.lastIndexOf("/") + 1)
+  };
+  console.debug(uri);
+  var documentClone = document.cloneNode(true);
+  console.debug(document);
+  var article = new Readability(uri, document);
+  console.debug(article);
+
 }
 
 function init(filePathURI, objectlocation) {
