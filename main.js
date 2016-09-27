@@ -39,6 +39,10 @@ function setContent(content, filePathURI) {
     var documentClone = document.cloneNode(true);
     var article = new Readability(uri, documentClone).parse();
     console.debug(article);
+    article.textContent =  article.textContent.replace(/\r?\n/g, '<br />');
+    console.debug(article.textContent);
+
+    //$("#mhtmlViewer").html(article.textContent);
 
     init(filePathURI, mail_object);
 
