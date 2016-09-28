@@ -18,6 +18,14 @@ function setContent(content, filePathURI) {
 
     $("#mhtmlViewer").html(cleanedHTML);
 
+    var documentClone = document.cloneNode(true);
+    var article = new Readability(document.baseURI, documentClone).parse();
+    //console.debug(article);
+    //article.textContent =  article.textContent.replace(/\r?\n/g, '<br />');
+    //console.debug(article.textContent);
+
+    $("#mhtmlViewer").html(article.content);
+
     // making all links open in the user default browser
     $("#mhtmlViewer").find("a").bind('click', function(e) {
       e.preventDefault();
@@ -27,25 +35,7 @@ function setContent(content, filePathURI) {
 
     $("#fileMeta").append("saved on " + mail_object.headers.date);
 
-    var loc = document.location;
-    var uri = {
-      spec: loc.href,
-      //host: loc.host,
-      //prePath: loc.protocol + "//" + loc.host,
-      //scheme: loc.protocol.substr(0, loc.protocol.indexOf(":")),
-      pathBase: loc.protocol + "//" + loc.host + loc.pathname.substr(0, loc.pathname.lastIndexOf("/") + 1)
-    };
-
-    var documentClone = document.cloneNode(true);
-    var article = new Readability(uri, documentClone).parse();
-    console.debug(article);
-    article.textContent =  article.textContent.replace(/\r?\n/g, '<br />');
-    console.debug(article.textContent);
-
-    //$("#mhtmlViewer").html(article.textContent);
-
     init(filePathURI, mail_object);
-
   });
 
   mhtparser.write(content);
