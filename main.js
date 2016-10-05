@@ -75,11 +75,13 @@ function setContent(content, filePathURI) {
       $("#toSansSerifFont").show();
     });
 
-    $("#increasingFontSize").on('click', function() {
+    $("#increasingFontSize").on('click', function(e) {
+      e.stopPropagation();
       increaseFont();
     });
 
-    $("#decreasingFontSize").on('click', function() {
+    $("#decreasingFontSize").on('click', function(e) {
+      e.stopPropagation();
       decreaseFont();
     });
 
