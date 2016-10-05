@@ -16,7 +16,7 @@ function setContent(content, filePathURI) {
     mail_object.contentLocation = (contLocation && contLocation.length > 0) ? contLocation[1] : "not found";
     var cleanedHTML = DOMPurify.sanitize(mail_object.html);
 
-    $("#mhtmlViewer").html(cleanedHTML);
+    //$("#mhtmlViewer").html(cleanedHTML);
 
     // making all links open in the user default browser
     $("#mhtmlViewer").find("a").bind('click', function(e) {
@@ -34,25 +34,29 @@ function setContent(content, filePathURI) {
     var mhtmlViewer = document.getElementById("mhtmlViewer");
     var fontSize = 14;
     mhtmlViewer.style.fontSize = fontSize;
+    $("#mhtmlViewer").html(article.content);
+    mhtmlViewer.style.fontSize = fontSize;//"large";
+    mhtmlViewer.style.fontFamily = "Helvetica, Arial, sans-serif";
+    mhtmlViewer.style.background = "#ffffff";
+    mhtmlViewer.style.color = "";
+
     $("#readabilityOn").on('click', function() {
       $("#mhtmlViewer").html(article.content);
-      mhtmlViewer.style.fontSize = fontSize;//"large";
-      mhtmlViewer.style.fontFamily = "Helvetica, Arial, sans-serif";
-      mhtmlViewer.style.background = "#ffffff";
-      mhtmlViewer.style.color = "";
       if ($("#mhtmlViewer").data('clicked', true)) {
         $("#toSerifFont").show();
+        $("#toSansSerifFont").show();
         $("#increasingFontSize").show();
         $("#decreasingFontSize").show();
         $("#readabilityOff").show();
         $("#whiteBackgroundColor").show();
         $("#blackBackgroundColor").show();
         $("#sepiaBackgroundColor").show();
+        $("#themeStyle").show();
+        $("#readabilityFont").show();
+        $("#readabilityFontSize").show();
         $("#readabilityOn").hide();
-        $("#toSansSerifFont").hide();
         $("#changeStyleButton").hide();
         $("#resetStyleButton").hide();
-        $("#themeStyle").show();
       }
     });
 
@@ -62,20 +66,35 @@ function setContent(content, filePathURI) {
       mhtmlViewer.style.fontFamily = "";
       mhtmlViewer.style.color = "";
       mhtmlViewer.style.background = "";
+      $("#readabilityOff").hide();
+      $("#toSerifFont").hide();
+      $("#toSansSerifFont").hide();
+      $("#increasingFontSize").hide();
+      $("#decreasingFontSize").hide();
+      $("#readabilityOff").hide();
+      $("#whiteBackgroundColor").hide();
+      $("#blackBackgroundColor").hide();
+      $("#sepiaBackgroundColor").hide();
+      $("#themeStyle").hide();
+      $("#readabilityFont").hide();
+      $("#readabilityFontSize").hide();
+      $("#readabilityOn").show();
+      $("#changeStyleButton").show();
+      $("#resetStyleButton").show();
     });
 
     $("#toSansSerifFont").on('click', function(e) {
       e.stopPropagation();
       mhtmlViewer.style.fontFamily = "Helvetica, Arial, sans-serif";
-      $("#toSansSerifFont").hide();
-      $("#toSerifFont").show();
+      //$("#toSansSerifFont").hide();
+      //$("#toSerifFont").show();
     });
 
     $("#toSerifFont").on('click', function(e) {
       e.stopPropagation();
       mhtmlViewer.style.fontFamily = "Georgia, Times New Roman, serif";
-      $("#toSerifFont").hide();
-      $("#toSansSerifFont").show();
+      //$("#toSerifFont").hide();
+      //$("#toSansSerifFont").show();
     });
 
     $("#increasingFontSize").on('click', function(e) {
@@ -193,16 +212,20 @@ function init(filePathURI, objectlocation) {
     saveExtSettings();
   });
 
-  //hide readability items
-  $("#toSansSerifFont").hide();
-  $("#toSerifFont").hide();
-  $("#increasingFontSize").hide();
-  $("#decreasingFontSize").hide();
-  $("#readabilityOff").hide();
-  $("#whiteBackgroundColor").hide();
-  $("#blackBackgroundColor").hide();
-  $("#sepiaBackgroundColor").hide();
-  $("#themeStyle").hide();
+  // Menu: hide readability items
+  $("#toSansSerifFont").show();
+  $("#toSerifFont").show();
+  $("#increasingFontSize").show();
+  $("#decreasingFontSize").show();
+  $("#readabilityOn").hide();
+  $("#changeStyleButton").hide();
+  $("#resetStyleButton").hide();
+  //$("#whiteBackgroundColor").hide();
+  //$("#blackBackgroundColor").hide();
+  //$("#sepiaBackgroundColor").hide();
+  //$("#themeStyle").hide();
+  //$("#readabilityFont").hide();
+  //$("#readabilityFontSize").hide();
 
   //hide zoom operation menu items because they don't influence on the style
   $("#zoomInButton").hide();
