@@ -12,5 +12,11 @@
   "print": "Print",
   "about": "About",
   "aboutTitle": "About ViewerMHTML extension",
+  "readabilityOn": "Read comfortably",
+  "readabilityOff": "Readability Off",
+  "toSansSerifFont": "Changing to sans serif font",
+  "toSerifFont": "Changing to serif font",
+  "increasingFontSize": "Increasing font size",
+  "decreasingFontSize": "Decreasing font size",
   "-": "-"
 }

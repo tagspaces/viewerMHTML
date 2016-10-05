@@ -13,7 +13,7 @@ function setContent(content, filePathURI) {
     //console.log("mail_object:", mail_object);
 
     var contLocation = /^content-location:(.*$)/im.exec(content);
-    mail_object.contentLocation = (contLocation && contLocation.length > 0) ?  contLocation[1] : "not found";
+    mail_object.contentLocation = (contLocation && contLocation.length > 0) ? contLocation[1] : "not found";
     var cleanedHTML = DOMPurify.sanitize(mail_object.html);
 
     $("#mhtmlViewer").html(cleanedHTML);
@@ -21,7 +21,7 @@ function setContent(content, filePathURI) {
     // making all links open in the user default browser
     $("#mhtmlViewer").find("a").bind('click', function(e) {
       e.preventDefault();
-      var msg = {command: "openLinkExternally", link : $(this).attr("href")};
+      var msg = {command: "openLinkExternally", link: $(this).attr("href")};
       window.parent.postMessage(JSON.stringify(msg), "*");
     }).css("cursor", "default");
 
@@ -38,14 +38,53 @@ function setContent(content, filePathURI) {
 
     var documentClone = document.cloneNode(true);
     var article = new Readability(uri, documentClone).parse();
-    console.debug(article);
-    article.textContent =  article.textContent.replace(/\r?\n/g, '<br />');
-    console.debug(article.textContent);
+    //article.textContent =  article.textContent.replace(/\r?\n/g, '<br />');
 
-    //$("#mhtmlViewer").html(article.textContent);
+    var mhtmlViewer = document.getElementById("mhtmlViewer");
+    var fontSize = 14;
+    $("#readabilityOn").on('click', function() {
+      $("#mhtmlViewer").html(article.content);
+      mhtmlViewer.style.fontSize = fontSize;//"large";
+      mhtmlViewer.style.fontFamily = "Helvetica, Arial, sans-serif";
+      mhtmlViewer.style.color = "#5b4636";
+      mhtmlViewer.style.background = "#f4ecd8";
+      if ($("#mhtmlViewer").data('clicked', true)) {
+        $("#toSansSerifFont").show();
+        $("#toSerifFont").show();
+        $("#increasingFontSize").show();
+        $("#decreasingFontSize").show();
+        $("#readabilityOff").show();
+        $("#readabilityOn").hide();
+      }
+    });
+
+    $("#readabilityOff").on('click', function(){
+      $("#mhtmlViewer").html(cleanedHTML);
+      mhtmlViewer.style.fontSize = '';//"large";
+      mhtmlViewer.style.fontFamily = "";
+      mhtmlViewer.style.color = "";
+      mhtmlViewer.style.background = "";
+    });
+
+    $("#toSansSerifFont").on('click', function() {
+      mhtmlViewer.style.fontFamily = "Helvetica, Arial, sans-serif";
+    });
+
+    $("#toSerifFont").on('click', function() {
+      mhtmlViewer.style.fontFamily = "Georgia, Times New Roman, serif";
+    });
+
+    $("#increasingFontSize").on('click', function() {
+      console.log(mhtmlViewer.style.fontSize);
+      //mhtmlViewer.style.fontSize = 14;//"large"
+      //mhtmlViewer.style.fontSize += 1;//"large";
+    });
+
+    $("#decreasingFontSize").on('click', function() {
+      //mhtmlViewer.style.fontSize -= 1;//"large";
+    });
 
     init(filePathURI, mail_object);
-
   });
 
   mhtparser.write(content);
@@ -56,13 +95,13 @@ function init(filePathURI, objectlocation) {
   var isCordova;
   var isWin;
   var isWeb;
-  
-  var $htmlContent;  
-  
+
+  var $htmlContent;
+
   function getParameterByName(name) {
     name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
     var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
-    results = regex.exec(window.location.search);
+      results = regex.exec(window.location.search);
     return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
   }
 
@@ -76,7 +115,7 @@ function init(filePathURI, objectlocation) {
   isWeb = parent.isWeb;
 
   $htmlContent = $("#mhtmlViewer");
-  
+
   var styles = ['', 'solarized-dark', 'github', 'metro-vibes', 'clearness', 'clearness-dark'];
   var currentStyleIndex = 0;
   if (extSettings && extSettings.styleIndex) {
@@ -109,6 +148,13 @@ function init(filePathURI, objectlocation) {
     $htmlContent.addClass('markdown ' + styles[currentStyleIndex] + " " + zoomSteps[currentZoomState]);
     saveExtSettings();
   });
+
+  //hide readability items
+  $("#toSansSerifFont").hide();
+  $("#toSerifFont").hide();
+  $("#increasingFontSize").hide();
+  $("#decreasingFontSize").hide();
+  $("#readabilityOff").hide();
 
   //hide zoom operation menu items because they don't influence on the style
   $("#zoomInButton").hide();
@@ -150,10 +196,10 @@ function init(filePathURI, objectlocation) {
   });
 
   $("#openURLButton").click(function() {
-    var msg = {command: "openLinkExternally", link : objectlocation.contentLocation.trim()};
-    window.parent.postMessage(JSON.stringify(msg), "*");    
+    var msg = {command: "openLinkExternally", link: objectlocation.contentLocation.trim()};
+    window.parent.postMessage(JSON.stringify(msg), "*");
   });
-  
+
   // Init internationalization
   $.i18n.init({
     ns: {namespaces: ['ns.viewerMHTML']},
@@ -167,7 +213,7 @@ function init(filePathURI, objectlocation) {
   function saveExtSettings() {
     var settings = {
       "styleIndex": currentStyleIndex,
-      "zoomState":  currentZoomState
+      "zoomState": currentZoomState
     };
     localStorage.setItem('viewerMHTMLSettings', JSON.stringify(settings));
   }
