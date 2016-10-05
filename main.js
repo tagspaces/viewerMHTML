@@ -16,7 +16,7 @@ function setContent(content, filePathURI) {
     mail_object.contentLocation = (contLocation && contLocation.length > 0) ? contLocation[1] : "not found";
     var cleanedHTML = DOMPurify.sanitize(mail_object.html);
 
-    //$("#mhtmlViewer").html(cleanedHTML);
+    $("#mhtmlViewer").html(cleanedHTML);
 
     // making all links open in the user default browser
     $("#mhtmlViewer").find("a").bind('click', function(e) {
