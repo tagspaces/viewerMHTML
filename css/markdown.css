@@ -156,3 +156,7 @@
   -moz-box-shadow: #fdffb6 0 0 5px;
   box-shadow: #fdffb6 0 0 5px;
 }
+
+#mhtmlViewer {
+  font-size: 14px;
+}

@@ -18,14 +18,6 @@ function setContent(content, filePathURI) {
 
     $("#mhtmlViewer").html(cleanedHTML);
 
-    var documentClone = document.cloneNode(true);
-    var article = new Readability(document.baseURI, documentClone).parse();
-    //console.debug(article);
-    //article.textContent =  article.textContent.replace(/\r?\n/g, '<br />');
-    //console.debug(article.textContent);
-
-    $("#mhtmlViewer").html(article.content);
-
     // making all links open in the user default browser
     $("#mhtmlViewer").find("a").bind('click', function(e) {
       e.preventDefault();
@@ -35,21 +27,13 @@ function setContent(content, filePathURI) {
 
     $("#fileMeta").append("saved on " + mail_object.headers.date);
 
-    var loc = document.location;
-    var uri = {
-      spec: loc.href,
-      //host: loc.host,
-      //prePath: loc.protocol + "//" + loc.host,
-      //scheme: loc.protocol.substr(0, loc.protocol.indexOf(":")),
-      pathBase: loc.protocol + "//" + loc.host + loc.pathname.substr(0, loc.pathname.lastIndexOf("/") + 1)
-    };
 
     var documentClone = document.cloneNode(true);
-    var article = new Readability(uri, documentClone).parse();
-    //article.textContent =  article.textContent.replace(/\r?\n/g, '<br />');
+    var article = new Readability(document.baseURI, documentClone).parse();
 
     var mhtmlViewer = document.getElementById("mhtmlViewer");
     var fontSize = 14;
+    mhtmlViewer.style.fontSize = fontSize;
     $("#readabilityOn").on('click', function() {
       $("#mhtmlViewer").html(article.content);
       mhtmlViewer.style.fontSize = fontSize;//"large";
@@ -57,12 +41,12 @@ function setContent(content, filePathURI) {
       mhtmlViewer.style.color = "#5b4636";
       mhtmlViewer.style.background = "#f4ecd8";
       if ($("#mhtmlViewer").data('clicked', true)) {
-        $("#toSansSerifFont").show();
         $("#toSerifFont").show();
         $("#increasingFontSize").show();
         $("#decreasingFontSize").show();
         $("#readabilityOff").show();
         $("#readabilityOn").hide();
+        $("#toSansSerifFont").hide();
       }
     });
 
@@ -76,20 +60,26 @@ function setContent(content, filePathURI) {
 
     $("#toSansSerifFont").on('click', function() {
       mhtmlViewer.style.fontFamily = "Helvetica, Arial, sans-serif";
+      $("#toSansSerifFont").hide();
+      $("#toSerifFont").show();
     });
 
     $("#toSerifFont").on('click', function() {
       mhtmlViewer.style.fontFamily = "Georgia, Times New Roman, serif";
+      $("#toSerifFont").hide();
+      $("#toSansSerifFont").show();
     });
 
     $("#increasingFontSize").on('click', function() {
-      console.log(mhtmlViewer.style.fontSize);
-      //mhtmlViewer.style.fontSize = 14;//"large"
-      //mhtmlViewer.style.fontSize += 1;//"large";
+      var style = window.getComputedStyle(mhtmlViewer, null).getPropertyValue('font-size');
+      var fontSize = parseFloat(style);
+      mhtmlViewer.style.fontSize = (fontSize + 1) + 'px';
     });
 
     $("#decreasingFontSize").on('click', function() {
-      //mhtmlViewer.style.fontSize -= 1;//"large";
+      var style = window.getComputedStyle(mhtmlViewer, null).getPropertyValue('font-size');
+      var fontSize = parseFloat(style);
+      mhtmlViewer.style.fontSize = (fontSize - 1) + 'px';
     });
 
     init(filePathURI, mail_object);
