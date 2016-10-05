@@ -2,7 +2,7 @@
  * Use of this source code is governed by the MIT license which can be found in the LICENSE.txt file. */
 
 /* global define MailParser, DOMPurify, Readability */
-/* globals marked, MailParser */
+/* globals marked, MailParser, Mousetrap */
 
 "use strict";
 
@@ -71,7 +71,6 @@ function setContent(content, filePathURI) {
       $("#toSansSerifFont").hide();
       $("#increasingFontSize").hide();
       $("#decreasingFontSize").hide();
-      $("#readabilityOff").hide();
       $("#whiteBackgroundColor").hide();
       $("#blackBackgroundColor").hide();
       $("#sepiaBackgroundColor").hide();
@@ -86,15 +85,11 @@ function setContent(content, filePathURI) {
     $("#toSansSerifFont").on('click', function(e) {
       e.stopPropagation();
       mhtmlViewer.style.fontFamily = "Helvetica, Arial, sans-serif";
-      //$("#toSansSerifFont").hide();
-      //$("#toSerifFont").show();
     });
 
     $("#toSerifFont").on('click', function(e) {
       e.stopPropagation();
       mhtmlViewer.style.fontFamily = "Georgia, Times New Roman, serif";
-      //$("#toSerifFont").hide();
-      //$("#toSansSerifFont").show();
     });
 
     $("#increasingFontSize").on('click', function(e) {
@@ -107,11 +102,11 @@ function setContent(content, filePathURI) {
       decreaseFont();
     });
 
-     $("#whiteBackgroundColor").on('click', function(e) {
-       e.stopPropagation();
-       mhtmlViewer.style.background = "#ffffff";
-       mhtmlViewer.style.color = "";
-     });
+    $("#whiteBackgroundColor").on('click', function(e) {
+      e.stopPropagation();
+      mhtmlViewer.style.background = "#ffffff";
+      mhtmlViewer.style.color = "";
+    });
 
     $("#blackBackgroundColor").on('click', function(e) {
       e.stopPropagation();
@@ -220,12 +215,6 @@ function init(filePathURI, objectlocation) {
   $("#readabilityOn").hide();
   $("#changeStyleButton").hide();
   $("#resetStyleButton").hide();
-  //$("#whiteBackgroundColor").hide();
-  //$("#blackBackgroundColor").hide();
-  //$("#sepiaBackgroundColor").hide();
-  //$("#themeStyle").hide();
-  //$("#readabilityFont").hide();
-  //$("#readabilityFontSize").hide();
 
   //hide zoom operation menu items because they don't influence on the style
   $("#zoomInButton").hide();
