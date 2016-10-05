@@ -160,3 +160,13 @@
 #mhtmlViewer {
   font-size: 14px;
 }
+
+.btn-black {
+  background-color: #282a36;
+  color: #ffffff;
+}
+
+.btn-sepia {
+  background-color: #f4ecd8;
+  color: #5b4636;
+}

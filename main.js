@@ -52,6 +52,7 @@ function setContent(content, filePathURI) {
         $("#toSansSerifFont").hide();
         $("#changeStyleButton").hide();
         $("#resetStyleButton").hide();
+        $("#themeStyle").show();
       }
     });
 
@@ -201,6 +202,7 @@ function init(filePathURI, objectlocation) {
   $("#whiteBackgroundColor").hide();
   $("#blackBackgroundColor").hide();
   $("#sepiaBackgroundColor").hide();
+  $("#themeStyle").hide();
 
   //hide zoom operation menu items because they don't influence on the style
   $("#zoomInButton").hide();
