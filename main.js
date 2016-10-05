@@ -13,15 +13,23 @@ function setContent(content, filePathURI) {
     //console.log("mail_object:", mail_object);
 
     var contLocation = /^content-location:(.*$)/im.exec(content);
-    mail_object.contentLocation = (contLocation && contLocation.length > 0) ? contLocation[1] : "not found";
+    mail_object.contentLocation = (contLocation && contLocation.length > 0) ?  contLocation[1] : "not found";
     var cleanedHTML = DOMPurify.sanitize(mail_object.html);
 
     $("#mhtmlViewer").html(cleanedHTML);
 
+    var documentClone = document.cloneNode(true);
+    var article = new Readability(document.baseURI, documentClone).parse();
+    //console.debug(article);
+    //article.textContent =  article.textContent.replace(/\r?\n/g, '<br />');
+    //console.debug(article.textContent);
+
+    $("#mhtmlViewer").html(article.content);
+
     // making all links open in the user default browser
     $("#mhtmlViewer").find("a").bind('click', function(e) {
       e.preventDefault();
-      var msg = {command: "openLinkExternally", link: $(this).attr("href")};
+      var msg = {command: "openLinkExternally", link : $(this).attr("href")};
       window.parent.postMessage(JSON.stringify(msg), "*");
     }).css("cursor", "default");
 
@@ -95,13 +103,13 @@ function init(filePathURI, objectlocation) {
   var isCordova;
   var isWin;
   var isWeb;
-
-  var $htmlContent;
-
+  
+  var $htmlContent;  
+  
   function getParameterByName(name) {
     name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
     var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
-      results = regex.exec(window.location.search);
+    results = regex.exec(window.location.search);
     return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
   }
 
@@ -115,7 +123,7 @@ function init(filePathURI, objectlocation) {
   isWeb = parent.isWeb;
 
   $htmlContent = $("#mhtmlViewer");
-
+  
   var styles = ['', 'solarized-dark', 'github', 'metro-vibes', 'clearness', 'clearness-dark'];
   var currentStyleIndex = 0;
   if (extSettings && extSettings.styleIndex) {
@@ -196,10 +204,10 @@ function init(filePathURI, objectlocation) {
   });
 
   $("#openURLButton").click(function() {
-    var msg = {command: "openLinkExternally", link: objectlocation.contentLocation.trim()};
-    window.parent.postMessage(JSON.stringify(msg), "*");
+    var msg = {command: "openLinkExternally", link : objectlocation.contentLocation.trim()};
+    window.parent.postMessage(JSON.stringify(msg), "*");    
   });
-
+  
   // Init internationalization
   $.i18n.init({
     ns: {namespaces: ['ns.viewerMHTML']},
@@ -213,7 +221,7 @@ function init(filePathURI, objectlocation) {
   function saveExtSettings() {
     var settings = {
       "styleIndex": currentStyleIndex,
-      "zoomState": currentZoomState
+      "zoomState":  currentZoomState
     };
     localStorage.setItem('viewerMHTMLSettings', JSON.stringify(settings));
   }
