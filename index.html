@@ -13,6 +13,8 @@
   <script type="text/javascript" src="main.js"></script>
   <script type="text/javascript" src="libs/jquery.highlight.js"></script>
   <script type="text/javascript" src="../../libs/extCommon/common.js"></script>
+  <script type="text/javascript" src="libs/readability/Readability.js"></script>
+  <script type="text/javascript" src="libs/readability/JSDOMParser.js"></script>
   <link rel="stylesheet" href="../../assets/tagspaces.css"/>
   <link rel="stylesheet" href="extension.css"/>
   <link rel="stylesheet" href="css/markdown.css"/>
@@ -53,16 +55,39 @@
       <button class="close">&times;</button>&nbsp;
     </li>
     <li class="divider"></li>
-    <li><a id="findInFile">
-      <i class="fa fa-binoculars fa-lg fa-fw"></i>&nbsp;<span data-i18n="ns.viewerMHTML:findInDocument"></span>
+    <li><a id="readabilityOn">
+      <i class="fa fa-book fa-lg fa-fw"></i>&nbsp;<span data-i18n="ns.viewerMHTML:readabilityOn"></span>
     </a></li>
-    <li class="divider"></li>
-    <li><a id="changeStyleButton">
-      <i class="fa fa-adjust fa-lg fa-fw"></i>&nbsp;<span data-i18n="ns.viewerMHTML:changeTheme"></span>
+    <li><a id="readabilityOff">
+      <i class="fa fa-book fa-lg fa-fw"></i>&nbsp;<span data-i18n="ns.viewerMHTML:readabilityOff"></span>
     </a></li>
-    <li><a id="resetStyleButton">
-      <i class="fa fa-circle-o fa-lg fa-fw"></i>&nbsp;<span data-i18n="ns.viewerMHTML:resetTheme"></span>
-    </a></li>
+    <li>
+      <div id="readabilityFont">
+        <i class="fa fa-font fa-lg fa-fw"></i>&nbsp;
+        <div class="btn-group" data-toggle="buttons">
+          <a id="toSansSerifFont"><label id="sanSerifLabel" class="btn btn-secondary" data-i18n="[title]ns.viewerMHTML:toSansSerifFont">ABC</label></a>
+          <a id="toSerifFont"><label id="serifLabel" class="btn btn-secondary" data-i18n="[title]ns.viewerMHTML:toSerifFont">ABC</label></a>
+        </div>
+      </div>
+    </li>
+    <li>
+      <div id="readabilityFontSize">
+        <i class="fa fa-text-height fa-lg fa-fw"></i>&nbsp;
+        <div class="btn-group" data-toggle="buttons">
+          <a id="decreasingFontSize"><label class="btn btn-secondary" data-i18n="[title]ns.viewerMHTML:decreasingFontSize">-</label></a>
+          <a id="increasingFontSize"><label class="btn btn-secondary" data-i18n="[title]ns.viewerMHTML:increasingFontSize">+</label></a>
+        </div>
+      </div>
+    </li>
+      <div id="themeStyle" style="margin-left: 19px; margin-top: 10px;">
+        <i class="fa fa-paint-brush fa-lg fa-fw"></i>&nbsp;
+        <div class="btn-group" data-toggle="buttons">
+          <a id="whiteBackgroundColor"><label class="btn btn-secondary" data-i18n="[title]ns.viewerMHTML:whiteBackgroundColor">&nbsp;</label></a>
+          <a id="blackBackgroundColor"><label class="btn btn-black" data-i18n="[title]ns.viewerMHTML:blackBackgroundColor">&nbsp;</label></a>
+          <a id="sepiaBackgroundColor"><label class="btn btn-sepia" data-i18n="[title]ns.viewerMHTML:sepiaBackgroundColor">&nbsp;</label></a>
+        </div>
+      </div>
+    </li>
     <li><a id="zoomOutButton">
       <i class="fa fa-search-minus fa-lg fa-fw"></i>&nbsp;<span data-i18n="ns.viewerMHTML:zoomOut"></span>
     </a></li>
@@ -73,6 +98,9 @@
       <i class="fa fa-search fa-lg fa-fw"></i>&nbsp;<span data-i18n="ns.viewerMHTML:zoomReset"></span>
     </a></li>
     <li class="divider"></li>
+    <li><a id="findInFile">
+      <i class="fa fa-binoculars fa-lg fa-fw"></i>&nbsp;<span data-i18n="ns.viewerMHTML:findInDocument"></span>
+    </a></li>
     <li><a id="printButton">
       <i class="fa fa-print fa-lg fa-fw"></i>&nbsp;<span data-i18n="ns.viewerMHTML:print"></span>
     </a></li>

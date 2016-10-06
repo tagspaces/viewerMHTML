@@ -12,5 +12,14 @@
   "print": "Print",
   "about": "About",
   "aboutTitle": "About ViewerMHTML extension",
+  "readabilityOn": "Read comfortably",
+  "readabilityOff": "Readability Off",
+  "toSansSerifFont": "Apply sans serif font",
+  "toSerifFont": "Apply serif font",
+  "increasingFontSize": "Increase Font Size",
+  "decreasingFontSize": "Decrease Font Size",
+  "whiteBackgroundColor": "White Background",
+  "blackBackgroundColor": "Black Background",
+  "sepiaBackgroundColor": "Sepia Background",
   "-": "-"
 }

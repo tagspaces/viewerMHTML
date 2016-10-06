@@ -1,8 +1,8 @@
 /* Copyright (c) 2013-2016 The TagSpaces Authors.
  * Use of this source code is governed by the MIT license which can be found in the LICENSE.txt file. */
 
-/* global MailParser, DOMPurify */
-/* globals marked, MailParser */
+/* global define MailParser, DOMPurify, Readability */
+/* globals marked, MailParser, Mousetrap */
 
 "use strict";
 
@@ -13,22 +13,136 @@ function setContent(content, filePathURI) {
     //console.log("mail_object:", mail_object);
 
     var contLocation = /^content-location:(.*$)/im.exec(content);
-    mail_object.contentLocation = (contLocation && contLocation.length > 0) ?  contLocation[1] : "not found";
+    mail_object.contentLocation = (contLocation && contLocation.length > 0) ? contLocation[1] : "not found";
     var cleanedHTML = DOMPurify.sanitize(mail_object.html);
-    
+
     $("#mhtmlViewer").html(cleanedHTML);
 
     // making all links open in the user default browser
     $("#mhtmlViewer").find("a").bind('click', function(e) {
       e.preventDefault();
-      var msg = {command: "openLinkExternally", link : $(this).attr("href")};
+      var msg = {command: "openLinkExternally", link: $(this).attr("href")};
       window.parent.postMessage(JSON.stringify(msg), "*");
     }).css("cursor", "default");
 
     $("#fileMeta").append("saved on " + mail_object.headers.date);
 
-    init(filePathURI, mail_object);
+    // View readability mode
+    var documentClone = document.cloneNode(true);
+    var article = new Readability(document.baseURI, documentClone).parse();
 
+    var mhtmlViewer = document.getElementById("mhtmlViewer");
+    var fontSize = 14;
+    mhtmlViewer.style.fontSize = fontSize;
+    $("#mhtmlViewer").html(article.content);
+    mhtmlViewer.style.fontSize = fontSize;//"large";
+    mhtmlViewer.style.fontFamily = "Helvetica, Arial, sans-serif";
+    mhtmlViewer.style.background = "#ffffff";
+    mhtmlViewer.style.color = "";
+
+    $("#readabilityOn").on('click', function() {
+      $("#mhtmlViewer").html(article.content);
+      if ($("#mhtmlViewer").data('clicked', true)) {
+        $("#toSerifFont").show();
+        $("#toSansSerifFont").show();
+        $("#increasingFontSize").show();
+        $("#decreasingFontSize").show();
+        $("#readabilityOff").show();
+        $("#whiteBackgroundColor").show();
+        $("#blackBackgroundColor").show();
+        $("#sepiaBackgroundColor").show();
+        $("#themeStyle").show();
+        $("#readabilityFont").show();
+        $("#readabilityFontSize").show();
+        $("#readabilityOn").hide();
+        $("#changeStyleButton").hide();
+        $("#resetStyleButton").hide();
+      }
+    });
+
+    $("#readabilityOff").on('click', function() {
+      $("#mhtmlViewer").html(cleanedHTML);
+      mhtmlViewer.style.fontSize = '';//"large";
+      mhtmlViewer.style.fontFamily = "";
+      mhtmlViewer.style.color = "";
+      mhtmlViewer.style.background = "";
+      $("#readabilityOff").hide();
+      $("#toSerifFont").hide();
+      $("#toSansSerifFont").hide();
+      $("#increasingFontSize").hide();
+      $("#decreasingFontSize").hide();
+      $("#whiteBackgroundColor").hide();
+      $("#blackBackgroundColor").hide();
+      $("#sepiaBackgroundColor").hide();
+      $("#themeStyle").hide();
+      $("#readabilityFont").hide();
+      $("#readabilityFontSize").hide();
+      $("#readabilityOn").show();
+      $("#changeStyleButton").show();
+      $("#resetStyleButton").show();
+    });
+
+    $("#toSansSerifFont").on('click', function(e) {
+      e.stopPropagation();
+      mhtmlViewer.style.fontFamily = "Helvetica, Arial, sans-serif";
+    });
+
+    $("#toSerifFont").on('click', function(e) {
+      e.stopPropagation();
+      mhtmlViewer.style.fontFamily = "Georgia, Times New Roman, serif";
+    });
+
+    $("#increasingFontSize").on('click', function(e) {
+      e.stopPropagation();
+      increaseFont();
+    });
+
+    $("#decreasingFontSize").on('click', function(e) {
+      e.stopPropagation();
+      decreaseFont();
+    });
+
+    $("#whiteBackgroundColor").on('click', function(e) {
+      e.stopPropagation();
+      mhtmlViewer.style.background = "#ffffff";
+      mhtmlViewer.style.color = "";
+    });
+
+    $("#blackBackgroundColor").on('click', function(e) {
+      e.stopPropagation();
+      mhtmlViewer.style.background = "#282a36";
+      mhtmlViewer.style.color = "#ffffff";
+    });
+
+    $("#sepiaBackgroundColor").on('click', function(e) {
+      e.stopPropagation();
+      mhtmlViewer.style.color = "#5b4636";
+      mhtmlViewer.style.background = "#f4ecd8";
+    });
+
+    function increaseFont() {
+      var style = window.getComputedStyle(mhtmlViewer, null).getPropertyValue('font-size');
+      var fontSize = parseFloat(style);
+      mhtmlViewer.style.fontSize = (fontSize + 1) + 'px';
+    }
+
+    function decreaseFont() {
+      var style = window.getComputedStyle(mhtmlViewer, null).getPropertyValue('font-size');
+      var fontSize = parseFloat(style);
+      mhtmlViewer.style.fontSize = (fontSize - 1) + 'px';
+    }
+
+    Mousetrap.bind(['command++', 'ctrl++'], function(e) {
+      increaseFont();
+      return false;
+    });
+
+    Mousetrap.bind(['command+-', 'ctrl+-'], function(e) {
+      decreaseFont();
+      return false;
+    });
+
+    init(filePathURI, mail_object);
   });
 
   mhtparser.write(content);
@@ -39,13 +153,13 @@ function init(filePathURI, objectlocation) {
   var isCordova;
   var isWin;
   var isWeb;
-  
-  var $htmlContent;  
-  
+
+  var $htmlContent;
+
   function getParameterByName(name) {
     name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
     var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
-    results = regex.exec(window.location.search);
+      results = regex.exec(window.location.search);
     return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
   }
 
@@ -59,7 +173,7 @@ function init(filePathURI, objectlocation) {
   isWeb = parent.isWeb;
 
   $htmlContent = $("#mhtmlViewer");
-  
+
   var styles = ['', 'solarized-dark', 'github', 'metro-vibes', 'clearness', 'clearness-dark'];
   var currentStyleIndex = 0;
   if (extSettings && extSettings.styleIndex) {
@@ -92,6 +206,15 @@ function init(filePathURI, objectlocation) {
     $htmlContent.addClass('markdown ' + styles[currentStyleIndex] + " " + zoomSteps[currentZoomState]);
     saveExtSettings();
   });
+
+  // Menu: hide readability items
+  $("#toSansSerifFont").show();
+  $("#toSerifFont").show();
+  $("#increasingFontSize").show();
+  $("#decreasingFontSize").show();
+  $("#readabilityOn").hide();
+  $("#changeStyleButton").hide();
+  $("#resetStyleButton").hide();
 
   //hide zoom operation menu items because they don't influence on the style
   $("#zoomInButton").hide();
@@ -133,10 +256,10 @@ function init(filePathURI, objectlocation) {
   });
 
   $("#openURLButton").click(function() {
-    var msg = {command: "openLinkExternally", link : objectlocation.contentLocation.trim()};
-    window.parent.postMessage(JSON.stringify(msg), "*");    
+    var msg = {command: "openLinkExternally", link: objectlocation.contentLocation.trim()};
+    window.parent.postMessage(JSON.stringify(msg), "*");
   });
-  
+
   // Init internationalization
   $.i18n.init({
     ns: {namespaces: ['ns.viewerMHTML']},
@@ -150,7 +273,7 @@ function init(filePathURI, objectlocation) {
   function saveExtSettings() {
     var settings = {
       "styleIndex": currentStyleIndex,
-      "zoomState":  currentZoomState
+      "zoomState": currentZoomState
     };
     localStorage.setItem('viewerMHTMLSettings', JSON.stringify(settings));
   }
