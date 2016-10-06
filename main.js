@@ -106,18 +106,24 @@ function setContent(content, filePathURI) {
       e.stopPropagation();
       mhtmlViewer.style.background = "#ffffff";
       mhtmlViewer.style.color = "";
+      document.body.style.background = "#ffffff";
+      document.body.style.color = "";
     });
 
     $("#blackBackgroundColor").on('click', function(e) {
       e.stopPropagation();
       mhtmlViewer.style.background = "#282a36";
       mhtmlViewer.style.color = "#ffffff";
+      document.body.style.background = "#282a36";
+      document.body.style.color = "#ffffff";
     });
 
     $("#sepiaBackgroundColor").on('click', function(e) {
       e.stopPropagation();
       mhtmlViewer.style.color = "#5b4636";
       mhtmlViewer.style.background = "#f4ecd8";
+      document.body.style.color = "#5b4636";
+      document.body.style.background = "#f4ecd8";
     });
 
     function increaseFont() {
