@@ -28,9 +28,10 @@ function setContent(content, filePathURI) {
     $("#fileMeta").append("saved on " + mail_object.headers.date);
 
     // View readability mode
+    var article;
     try {
       var documentClone = document.cloneNode(true);
-      var article = new Readability(document.baseURI, documentClone).parse();
+      article = new Readability(document.baseURI, documentClone).parse();
     } catch (e) {
       console.log("Error handling" + e);
       var msg = {
