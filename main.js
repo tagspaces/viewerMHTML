@@ -28,8 +28,14 @@ function setContent(content, filePathURI) {
     $("#fileMeta").append("saved on " + mail_object.headers.date);
 
     // View readability mode
-    var documentClone = document.cloneNode(true);
-    var article = new Readability(document.baseURI, documentClone).parse();
+    try {
+      var documentClone = document.cloneNode(true);
+      var article = new Readability(document.baseURI, documentClone).parse();
+    } catch (e) {
+      console.log("Error handling" + e);
+      var msg = {command: "readabilityError", link: e};
+      window.parent.postMessage(JSON.stringify(msg), "*");
+    }
 
     var mhtmlViewer = document.getElementById("mhtmlViewer");
     var fontSize = 14;
