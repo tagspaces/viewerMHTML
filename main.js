@@ -33,7 +33,7 @@ function setContent(content, filePathURI) {
       var article = new Readability(document.baseURI, documentClone).parse();
     } catch (e) {
       console.log("Error handling" + e);
-      var msg = {command: "readabilityError", link: e};
+      var msg = {command: "showAlertDialog", title:'Readability Mode', message: e};
       window.parent.postMessage(JSON.stringify(msg), "*");
     }
 
