@@ -29,6 +29,7 @@ function setContent(content, filePathURI) {
 
     var article;
     // View readability mode
+    var article;
     try {
       var documentClone = document.cloneNode(true);
       article = new Readability(document.baseURI, documentClone).parse();
