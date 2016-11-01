@@ -27,7 +27,6 @@ function setContent(content, filePathURI) {
 
     $("#fileMeta").append("saved on " + mail_object.headers.date);
 
-    var article;
     // View readability mode
     var article;
     try {
