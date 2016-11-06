@@ -18,8 +18,6 @@
   "toSerifFont": "Apply serif font",
   "increasingFontSize": "Increase Font Size",
   "decreasingFontSize": "Decrease Font Size",
-  "whiteBackgroundColor": "White Background",
-  "blackBackgroundColor": "Black Background",
-  "sepiaBackgroundColor": "Sepia Background",
+  "changeBackgroundColor": "Change Background Color",
   "-": "-"
 }
