@@ -16,14 +16,7 @@ function setContent(content, filePathURI) {
     mail_object.contentLocation = (contLocation && contLocation.length > 0) ? contLocation[1] : "not found";
     var cleanedHTML = DOMPurify.sanitize(mail_object.html);
 
-    $("#mhtmlViewer").html(cleanedHTML);
-
-    // making all links open in the user default browser
-    $("#mhtmlViewer").find("a").bind('click', function(e) {
-      e.preventDefault();
-      var msg = {command: "openLinkExternally", link: $(this).attr("href")};
-      window.parent.postMessage(JSON.stringify(msg), "*");
-    }).css("cursor", "default");
+    updateHTMLContent($("#mhtmlViewer"), cleanedHTML);
 
     $("#fileMeta").append("saved on " + mail_object.headers.date);
 
@@ -42,17 +35,16 @@ function setContent(content, filePathURI) {
       window.parent.postMessage(JSON.stringify(msg), "*");
     }
 
+    updateHTMLContent($("#mhtmlViewer"), article.content);
     var mhtmlViewer = document.getElementById("mhtmlViewer");
     var fontSize = 14;
-    mhtmlViewer.style.fontSize = fontSize;
-    $("#mhtmlViewer").html(article.content);
     mhtmlViewer.style.fontSize = fontSize;//"large";
     mhtmlViewer.style.fontFamily = "Helvetica, Arial, sans-serif";
     mhtmlViewer.style.background = "#ffffff";
     mhtmlViewer.style.color = "";
 
     $("#readabilityOn").on('click', function() {
-      $("#mhtmlViewer").html(article.content);
+      updateHTMLContent($("#mhtmlViewer"), article.content);
       if ($("#mhtmlViewer").data('clicked', true)) {
         $("#toSerifFont").show();
         $("#toSansSerifFont").show();
@@ -72,7 +64,7 @@ function setContent(content, filePathURI) {
     });
 
     $("#readabilityOff").on('click', function() {
-      $("#mhtmlViewer").html(cleanedHTML);
+      updateHTMLContent($("#mhtmlViewer"), cleanedHTML);
       mhtmlViewer.style.fontSize = '';//"large";
       mhtmlViewer.style.fontFamily = "";
       mhtmlViewer.style.color = "";
@@ -93,71 +85,28 @@ function setContent(content, filePathURI) {
       $("#resetStyleButton").show();
     });
 
-    $("#toSansSerifFont").on('click', function(e) {
-      e.stopPropagation();
-      mhtmlViewer.style.fontFamily = "Helvetica, Arial, sans-serif";
-    });
-
-    $("#toSerifFont").on('click', function(e) {
-      e.stopPropagation();
-      mhtmlViewer.style.fontFamily = "Georgia, Times New Roman, serif";
-    });
-
-    $("#increasingFontSize").on('click', function(e) {
-      e.stopPropagation();
-      increaseFont();
-    });
-
-    $("#decreasingFontSize").on('click', function(e) {
-      e.stopPropagation();
-      decreaseFont();
-    });
-
-    $("#whiteBackgroundColor").on('click', function(e) {
-      e.stopPropagation();
-      mhtmlViewer.style.background = "#ffffff";
-      mhtmlViewer.style.color = "";
-    });
-
-    $("#blackBackgroundColor").on('click', function(e) {
-      e.stopPropagation();
-      mhtmlViewer.style.background = "#282a36";
-      mhtmlViewer.style.color = "#ffffff";
-    });
-
-    $("#sepiaBackgroundColor").on('click', function(e) {
-      e.stopPropagation();
-      mhtmlViewer.style.color = "#5b4636";
-      mhtmlViewer.style.background = "#f4ecd8";
-    });
-
-    function increaseFont() {
-      var style = window.getComputedStyle(mhtmlViewer, null).getPropertyValue('font-size');
-      var fontSize = parseFloat(style);
-      mhtmlViewer.style.fontSize = (fontSize + 1) + 'px';
-    }
-
-    function decreaseFont() {
-      var style = window.getComputedStyle(mhtmlViewer, null).getPropertyValue('font-size');
-      var fontSize = parseFloat(style);
-      mhtmlViewer.style.fontSize = (fontSize - 1) + 'px';
-    }
-
-    Mousetrap.bind(['command++', 'ctrl++'], function(e) {
-      increaseFont();
-      return false;
-    });
-
-    Mousetrap.bind(['command+-', 'ctrl+-'], function(e) {
-      decreaseFont();
-      return false;
-    });
-
     init(filePathURI, mail_object);
   });
 
   mhtparser.write(content);
   mhtparser.end();
+}
+
+function handleLinks($element) {
+  $element.find("a[href]").each(function() {
+    var currentSrc = $(this).attr("href");
+    $(this).off();
+    $(this).on('click', function(e) {
+      e.preventDefault();
+      var msg = {command: "openLinkExternally", link: currentSrc};
+      window.parent.postMessage(JSON.stringify(msg), "*");
+    });
+  });
+}
+
+function updateHTMLContent($targetElement, content) {
+  $targetElement.html(content);
+  handleLinks($targetElement);
 }
 
 function init(filePathURI, objectlocation) {
@@ -199,24 +148,6 @@ function init(filePathURI, objectlocation) {
 
   $htmlContent.removeClass();
   $htmlContent.addClass('markdown ' + styles[currentStyleIndex] + " " + zoomSteps[currentZoomState]);
-
-  $("#changeStyleButton").on('click', function() {
-    currentStyleIndex = currentStyleIndex + 1;
-    if (currentStyleIndex >= styles.length) {
-      currentStyleIndex = 0;
-    }
-    $htmlContent.removeClass();
-    $htmlContent.addClass('markdown ' + styles[currentStyleIndex] + " " + zoomSteps[currentZoomState]);
-    saveExtSettings();
-  });
-
-  $("#resetStyleButton").on('click', function() {
-    currentStyleIndex = 0;
-    //currentZoomState = 5;
-    $htmlContent.removeClass();
-    $htmlContent.addClass('markdown ' + styles[currentStyleIndex] + " " + zoomSteps[currentZoomState]);
-    saveExtSettings();
-  });
 
   // Menu: hide readability items
   $("#toSansSerifFont").show();
@@ -261,14 +192,91 @@ function init(filePathURI, objectlocation) {
     saveExtSettings();
   });
 
-
-  $("#openInNewWindowButton").click(function() {
-    window.parent.open(filePathURI, '_blank');
+  $("#openInNewWindowButton").on('click', function() {
+    window.parent.open(filePathURI, '_blank'); // , 'nodeIntegration=0'
   });
 
-  $("#openURLButton").click(function() {
+  $("#openURLButton").on('click', function() {
     var msg = {command: "openLinkExternally", link: objectlocation.contentLocation.trim()};
     window.parent.postMessage(JSON.stringify(msg), "*");
+  });
+
+  $("#toSansSerifFont").on('click', function(e) {
+    e.stopPropagation();
+    $htmlContent[0].style.fontFamily = "Helvetica, Arial, sans-serif";
+  });
+
+  $("#toSerifFont").on('click', function(e) {
+    e.stopPropagation();
+    $htmlContent[0].style.fontFamily = "Georgia, Times New Roman, serif";
+  });
+
+  $("#increasingFontSize").on('click', function(e) {
+    e.stopPropagation();
+    increaseFont();
+  });
+
+  $("#decreasingFontSize").on('click', function(e) {
+    e.stopPropagation();
+    decreaseFont();
+  });
+
+  $("#whiteBackgroundColor").on('click', function(e) {
+    e.stopPropagation();
+    $htmlContent[0].style.background = "#ffffff";
+    $htmlContent[0].style.color = "";
+  });
+
+  $("#blackBackgroundColor").on('click', function(e) {
+    e.stopPropagation();
+    $htmlContent[0].style.background = "#282a36";
+    $htmlContent[0].style.color = "#ffffff";
+  });
+
+  $("#sepiaBackgroundColor").on('click', function(e) {
+    e.stopPropagation();
+    $htmlContent[0].style.color = "#5b4636";
+    $htmlContent[0].style.background = "#f4ecd8";
+  });
+
+  $("#changeStyleButton").on('click', function() {
+    currentStyleIndex = currentStyleIndex + 1;
+    if (currentStyleIndex >= styles.length) {
+      currentStyleIndex = 0;
+    }
+    $htmlContent.removeClass();
+    $htmlContent.addClass('markdown ' + styles[currentStyleIndex] + " " + zoomSteps[currentZoomState]);
+    saveExtSettings();
+  });
+
+  $("#resetStyleButton").on('click', function() {
+    currentStyleIndex = 0;
+    //currentZoomState = 5;
+    $htmlContent.removeClass();
+    $htmlContent.addClass('markdown ' + styles[currentStyleIndex] + " " + zoomSteps[currentZoomState]);
+    saveExtSettings();
+  });
+
+  function increaseFont() {
+    var style = window.getComputedStyle($htmlContent[0], null).getPropertyValue('font-size');
+    var fontSize = parseFloat(style);
+    $htmlContent[0].style.fontSize = (fontSize + 1) + 'px';
+  }
+
+  function decreaseFont() {
+    var style = window.getComputedStyle($htmlContent[0], null).getPropertyValue('font-size');
+    var fontSize = parseFloat(style);
+    $htmlContent[0].style.fontSize = (fontSize - 1) + 'px';
+  }
+
+  Mousetrap.bind(['command++', 'ctrl++'], function(e) {
+    increaseFont();
+    return false;
+  });
+
+  Mousetrap.bind(['command+-', 'ctrl+-'], function(e) {
+    decreaseFont();
+    return false;
   });
 
   // Init internationalization
