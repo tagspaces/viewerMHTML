@@ -6,6 +6,11 @@
 
 "use strict";
 
+var readabilityContent;
+var cleanedHTML;
+var mhtmlViewer;
+var fontSize = 14;
+
 function setContent(content, filePathURI) {
   //console.log("MHTML Content: "+content);
   var mhtparser = new MailParser();
@@ -14,17 +19,18 @@ function setContent(content, filePathURI) {
 
     var contLocation = /^content-location:(.*$)/im.exec(content);
     mail_object.contentLocation = (contLocation && contLocation.length > 0) ? contLocation[1] : "not found";
-    var cleanedHTML = DOMPurify.sanitize(mail_object.html);
+    cleanedHTML = DOMPurify.sanitize(mail_object.html);
 
     updateHTMLContent($("#mhtmlViewer"), cleanedHTML);
 
     $("#fileMeta").append("saved on " + mail_object.headers.date);
 
     // View readability mode
-    var article;
+
     try {
       var documentClone = document.cloneNode(true);
-      article = new Readability(document.baseURI, documentClone).parse();
+      var article = new Readability(document.baseURI, documentClone).parse();
+      readabilityContent = article.content;
     } catch (e) {
       console.log("Error handling" + e);
       var msg = {
@@ -35,55 +41,16 @@ function setContent(content, filePathURI) {
       window.parent.postMessage(JSON.stringify(msg), "*");
     }
 
-    updateHTMLContent($("#mhtmlViewer"), article.content);
-    var mhtmlViewer = document.getElementById("mhtmlViewer");
-    var fontSize = 14;
+
+    if(readabilityContent) {
+      updateHTMLContent($("#mhtmlViewer"), readabilityContent);
+    }
+
+    mhtmlViewer = document.getElementById("mhtmlViewer");
     mhtmlViewer.style.fontSize = fontSize;//"large";
     mhtmlViewer.style.fontFamily = "Helvetica, Arial, sans-serif";
     mhtmlViewer.style.background = "#ffffff";
     mhtmlViewer.style.color = "";
-
-    $("#readabilityOn").on('click', function() {
-      updateHTMLContent($("#mhtmlViewer"), article.content);
-      if ($("#mhtmlViewer").data('clicked', true)) {
-        $("#toSerifFont").show();
-        $("#toSansSerifFont").show();
-        $("#increasingFontSize").show();
-        $("#decreasingFontSize").show();
-        $("#readabilityOff").show();
-        $("#whiteBackgroundColor").show();
-        $("#blackBackgroundColor").show();
-        $("#sepiaBackgroundColor").show();
-        $("#themeStyle").show();
-        $("#readabilityFont").show();
-        $("#readabilityFontSize").show();
-        $("#readabilityOn").hide();
-        $("#changeStyleButton").hide();
-        $("#resetStyleButton").hide();
-      }
-    });
-
-    $("#readabilityOff").on('click', function() {
-      updateHTMLContent($("#mhtmlViewer"), cleanedHTML);
-      mhtmlViewer.style.fontSize = '';//"large";
-      mhtmlViewer.style.fontFamily = "";
-      mhtmlViewer.style.color = "";
-      mhtmlViewer.style.background = "";
-      $("#readabilityOff").hide();
-      $("#toSerifFont").hide();
-      $("#toSansSerifFont").hide();
-      $("#increasingFontSize").hide();
-      $("#decreasingFontSize").hide();
-      $("#whiteBackgroundColor").hide();
-      $("#blackBackgroundColor").hide();
-      $("#sepiaBackgroundColor").hide();
-      $("#themeStyle").hide();
-      $("#readabilityFont").hide();
-      $("#readabilityFontSize").hide();
-      $("#readabilityOn").show();
-      $("#changeStyleButton").show();
-      $("#resetStyleButton").show();
-    });
 
     init(filePathURI, mail_object);
   });
@@ -255,6 +222,50 @@ function init(filePathURI, objectlocation) {
     $htmlContent.removeClass();
     $htmlContent.addClass('markdown ' + styles[currentStyleIndex] + " " + zoomSteps[currentZoomState]);
     saveExtSettings();
+  });
+
+  $("#readabilityOn").on('click', function() {
+    if(readabilityContent) {
+      updateHTMLContent($("#mhtmlViewer"), readabilityContent);
+    }
+    //if ($("#mhtmlViewer").data('clicked', true)) {
+    $("#toSerifFont").show();
+    $("#toSansSerifFont").show();
+    $("#increasingFontSize").show();
+    $("#decreasingFontSize").show();
+    $("#readabilityOff").show();
+    $("#whiteBackgroundColor").show();
+    $("#blackBackgroundColor").show();
+    $("#sepiaBackgroundColor").show();
+    $("#themeStyle").show();
+    $("#readabilityFont").show();
+    $("#readabilityFontSize").show();
+    $("#readabilityOn").hide();
+    $("#changeStyleButton").hide();
+    $("#resetStyleButton").hide();
+    //}
+  });
+
+  $("#readabilityOff").on('click', function() {
+    updateHTMLContent($("#mhtmlViewer"), cleanedHTML);
+    mhtmlViewer.style.fontSize = '';
+    mhtmlViewer.style.fontFamily = "";
+    mhtmlViewer.style.color = "";
+    mhtmlViewer.style.background = "";
+    $("#readabilityOff").hide();
+    $("#toSerifFont").hide();
+    $("#toSansSerifFont").hide();
+    $("#increasingFontSize").hide();
+    $("#decreasingFontSize").hide();
+    $("#whiteBackgroundColor").hide();
+    $("#blackBackgroundColor").hide();
+    $("#sepiaBackgroundColor").hide();
+    $("#themeStyle").hide();
+    $("#readabilityFont").hide();
+    $("#readabilityFontSize").hide();
+    $("#readabilityOn").show();
+    $("#changeStyleButton").show();
+    $("#resetStyleButton").show();
   });
 
   function increaseFont() {
