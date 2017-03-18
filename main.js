@@ -13,7 +13,7 @@ var fontSize = 14;
 
 function setContent(content, filePathURI) {
   //console.log("MHTML Content: "+content);
-  var mhtparser = new MailParser();
+  var mhtparser = new mailparser.MailParser();
   mhtparser.on("end", function(mail_object) {
     //console.log("mail_object:", mail_object);
 

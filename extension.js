@@ -10,7 +10,6 @@ define(function(require, exports, module) {
   console.log("Loading " + extensionID);
 
   var TSCORE = require("tscore");
-  var MailParser = require("ext/viewerMHTML/mailparser/mailparser.min").MailParser;
   var currentFilePath;
   var $containerElement;
   var contentIFrame;
@@ -43,7 +42,6 @@ define(function(require, exports, module) {
     $containerElement.append(extUI);
 
     contentIFrame = document.getElementById(extensionID + "Viewer").contentWindow;
-    contentIFrame.MailParser = MailParser;
 
     TSCORE.IO.loadTextFilePromise(filePath).then(function(content) {
       exports.setContent(content);
@@ -64,7 +62,7 @@ define(function(require, exports, module) {
   }
 
   function setContent(content) {
-    if (typeof contentIFrame.setContent === "function" && contentIFrame.MailParser) {
+    if (typeof contentIFrame.setContent === "function") {
       contentIFrame.setContent(content, filePathURI);
     } else {
       window.setTimeout(function() {
@@ -74,22 +72,7 @@ define(function(require, exports, module) {
   }
 
   function getContent() {
-    /*TSCORE.IO.getFileContentPromise(file).then(function(buf) {
-      var mailparser = new MailParser();
 
-      var text = TSCORE.Utils.arrayBufferToStr(buf);
-      mailparser.on("end", function(parsedObject) {
-        //console.log(parsedObject);
-        var matched = parsedObject.html.match(/<body[^>]*>([\w|\W]*)<\/body>/im);
-        console.log($(matched[1]).text());
-      });
-
-      mailparser.write(text);
-      mailparser.end();
-
-    }, function(err) {
-      console.log(err);
-    });*/
   }
 
   exports.init = init;
