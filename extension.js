@@ -31,7 +31,7 @@ define(function(require, exports, module) {
     $containerElement.css("background-color", "white");
 
     var extUITmpl = Handlebars.compile(
-      '<iframe id="{{id}}Viewer" sandbox="allow-same-origin allow-scripts allow-modals" style="background-color: white; border: 0px;" class="flexMaxHeight" nwdisable="" src="{{extDir}}/index.html?&locale={{lang}}"></iframe>'
+      '<iframe id="iframeViewer" sandbox="allow-same-origin allow-scripts allow-modals" style="background-color: white; border: 0px;" class="flexMaxHeight" nwdisable="" src="{{extDir}}/index.html?&locale={{lang}}"></iframe>'
     );
 
     var extUI = extUITmpl({
