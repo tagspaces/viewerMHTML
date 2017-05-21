@@ -41,7 +41,7 @@ define(function(require, exports, module) {
     });
     $containerElement.append(extUI);
 
-    contentIFrame = document.getElementById(extensionID + "Viewer").contentWindow;
+    contentIFrame = document.getElementById("iframeViewer").contentWindow;
 
     TSCORE.IO.loadTextFilePromise(filePath).then(function(content) {
       exports.setContent(content);
