@@ -1,4 +1,4 @@
-/* Copyright (c) 2013-2016 The TagSpaces Authors.
+/* Copyright (c) 2013-present The TagSpaces Authors.
  * Use of this source code is governed by the MIT license which can be found in the LICENSE.txt file. */
 
 /* global define MailParser, DOMPurify, Readability */
@@ -76,10 +76,12 @@ function updateHTMLContent($targetElement, content) {
   handleLinks($targetElement);
 }
 
+var loadContentExternally = true;
+var isWeb = (document.URL.startsWith('http') && !document.URL.startsWith('http://localhost:1212/'));
+
 function init(filePathURI, objectlocation) {
   var isCordova;
   var isWin;
-  var isWeb;
 
   var $htmlContent;
 
@@ -95,9 +97,8 @@ function init(filePathURI, objectlocation) {
   var extSettings;
   loadExtSettings();
 
-  isCordova = parent.isCordova;
-  isWin = parent.isWin;
-  isWeb = parent.isWeb;
+  // isCordova = parent.isCordova;
+  // isWin = parent.isWin;
 
   $htmlContent = $("#mhtmlViewer");
 
@@ -291,13 +292,14 @@ function init(filePathURI, objectlocation) {
   });
 
   // Init internationalization
-  $.i18n.init({
+  i18next.init({
     ns: {namespaces: ['ns.viewerMHTML']},
     debug: true,
     lng: locale,
     fallbackLng: 'en_US'
   }, function() {
-    $('[data-i18n]').i18n();
+    jqueryI18next.init(i18next, $);
+    $('[data-i18n]').localize();
   });
 
   function saveExtSettings() {
