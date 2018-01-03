@@ -1,4 +1,4 @@
-@import '../../extCommon/common.css';
+@import '../legacy-ext/common.css';
 
 html, body {
   overflow: auto;
