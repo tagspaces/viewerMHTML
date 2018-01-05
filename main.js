@@ -76,10 +76,11 @@ function updateHTMLContent($targetElement, content) {
   handleLinks($targetElement);
 }
 
-var loadContentExternally = true;
 var isWeb = (document.URL.startsWith('http') && !document.URL.startsWith('http://localhost:1212/'));
 
 function init(filePathURI, objectlocation) {
+  sendMessageToHost({ command: 'loadDefaultTextContent' });
+
   var isCordova;
   var isWin;
 
