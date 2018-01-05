@@ -5,6 +5,7 @@
 /* globals marked, MailParser, Mousetrap */
 
 "use strict";
+sendMessageToHost({ command: 'loadDefaultTextContent' });
 
 var readabilityContent;
 var cleanedHTML;
@@ -79,8 +80,6 @@ function updateHTMLContent($targetElement, content) {
 var isWeb = (document.URL.startsWith('http') && !document.URL.startsWith('http://localhost:1212/'));
 
 function init(filePathURI, objectlocation) {
-  sendMessageToHost({ command: 'loadDefaultTextContent' });
-
   var isCordova;
   var isWin;
 
