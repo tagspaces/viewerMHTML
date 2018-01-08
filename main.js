@@ -39,7 +39,7 @@ function setContent(content, filePathURI) {
         title: 'Readability Mode',
         message: 'This content can not be loaded.'
       };
-      window.parent.postMessage(JSON.stringify(msg), "*");
+      sendMessageToHost(msg);
     }
 
 
@@ -67,7 +67,7 @@ function handleLinks($element) {
     $(this).on('click', function(e) {
       e.preventDefault();
       var msg = {command: "openLinkExternally", link: currentSrc};
-      window.parent.postMessage(JSON.stringify(msg), "*");
+      sendMessageToHost(msg);
     });
   });
 }
@@ -166,7 +166,7 @@ function init(filePathURI, objectlocation) {
 
   $("#openURLButton").on('click', function() {
     var msg = {command: "openLinkExternally", link: objectlocation.contentLocation.trim()};
-    window.parent.postMessage(JSON.stringify(msg), "*");
+    sendMessageToHost(msg);
   });
 
   $("#toSansSerifFont").on('click', function(e) {
