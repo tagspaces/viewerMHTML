@@ -80,26 +80,13 @@ function updateHTMLContent($targetElement, content) {
 var isWeb = (document.URL.startsWith('http') && !document.URL.startsWith('http://localhost:1212/'));
 
 function init(filePathURI, objectlocation) {
-  var isCordova;
-  var isWin;
-
   var $htmlContent;
-
-  function getParameterByName(name) {
-    name = name.replace(/[\[]/, '\\\[').replace(/[\]]/, '\\\]');
-    var regex = new RegExp('[\\?&]' + name + '=([^&#]*)'),
-      results = regex.exec(window.location.search);
-    return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
-  }
 
   var locale = getParameterByName('locale');
   initI18N(locale, 'ns.viewerMHTML.json');
 
   var extSettings;
   loadExtSettings();
-
-  // isCordova = parent.isCordova;
-  // isWin = parent.isWin;
 
   $htmlContent = $('#mhtmlViewer');
 
