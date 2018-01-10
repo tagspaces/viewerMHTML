@@ -18,7 +18,7 @@
   ],
   "license": "MIT",
   "main": [
-    "extension.js"
+    "main.js"
   ],
   "ignore": [
     "Gruntfile.js"

@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "A TagSpaces extension allowing you to open MHTML and EML files.",
   "homepage": "https://www.tagspaces.org",
-  "main": "extension.js",
+  "main": "main.js",
   "author": {
     "name": "TagSpaces UG",
     "email": "info@tagspaces.org",
