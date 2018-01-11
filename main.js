@@ -77,8 +77,6 @@ function updateHTMLContent($targetElement, content) {
   handleLinks($targetElement);
 }
 
-var isWeb = (document.URL.startsWith('http') && !document.URL.startsWith('http://localhost:1212/'));
-
 function init(filePathURI, objectlocation) {
   var $htmlContent;
 
