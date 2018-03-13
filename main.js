@@ -22,7 +22,7 @@ function setContent(content, filePathURI) {
     mail_object.contentLocation = (contLocation && contLocation.length > 0) ? contLocation[1] : 'not found';
     cleanedHTML = DOMPurify.sanitize(mail_object.html);
 
-    updateHTMLContent($('#mhtmlViewer'), cleanedHTML);
+    updateHTMLContent($('#mhtmlViewer'), cleanedHTML, filePathURI);
 
     $('#fileMeta').append('saved on ' + mail_object.headers.date);
 
@@ -44,7 +44,7 @@ function setContent(content, filePathURI) {
 
 
     if (readabilityContent) {
-      updateHTMLContent($('#mhtmlViewer'), readabilityContent);
+      updateHTMLContent($('#mhtmlViewer'), readabilityContent, filePathURI);
     }
 
     mhtmlViewer = document.getElementById('mhtmlViewer');
@@ -60,21 +60,52 @@ function setContent(content, filePathURI) {
   mhtparser.end();
 }
 
-function handleLinks($element) {
-  $element.find('a[href]').each(() => {
-    const currentSrc = $(this).attr('href');
-    $(this).off();
-    $(this).on('click', (e) => {
-      e.preventDefault();
-      const msg = {command: 'openLinkExternally', link: currentSrc};
-      sendMessageToHost(msg);
-    });
+// fixing embedding of local images
+function fixingEmbeddingOfLocalImages($htmlContent, fileDirectory) {
+  const hasURLProtocol = (url) => {
+    return (
+      url.indexOf('http://') === 0 ||
+      url.indexOf('https://') === 0 ||
+      url.indexOf('file://') === 0 ||
+      url.indexOf('data:') === 0
+    );
+  };
+
+  $htmlContent.find('img[src]').each((index, link) => {
+    const currentSrc = $(link).attr('src');
+    if (!hasURLProtocol(currentSrc)) {
+      const path = (isWeb ? '' : 'file://') + fileDirectory + '/' + currentSrc;
+      $(link).attr('src', path);
+    }
+  });
+
+  $htmlContent.find('a[href]').each((index, link) => {
+    let currentSrc = $(link).attr('href');
+    let path;
+
+    if(currentSrc.indexOf('#') === 0 ) {
+      // Leave the default link behaviour by internal links
+    } else {
+      if (!hasURLProtocol(currentSrc)) {
+        const path = (isWeb ? '' : 'file://') + fileDirectory + '/' + currentSrc;
+        $(link).attr('href', path);
+      }
+
+      $(link).off();
+      $(link).on('click', (e) => {
+        e.preventDefault();
+        if (path) {
+          currentSrc = encodeURIComponent(path);
+        }
+        sendMessageToHost({command: 'openLinkExternally', link: currentSrc});
+      });
+    }
   });
 }
 
-function updateHTMLContent($targetElement, content) {
+function updateHTMLContent($targetElement, content, fileDirectory) {
   $targetElement.html(content);
-  handleLinks($targetElement);
+  fixingEmbeddingOfLocalImages($targetElement, fileDirectory);
 }
 
 function init(filePathURI, objectlocation) {
