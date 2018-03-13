@@ -7,18 +7,18 @@
 'use strict';
 sendMessageToHost({ command: 'loadDefaultTextContent' });
 
-var readabilityContent;
-var cleanedHTML;
-var mhtmlViewer;
-var fontSize = 14;
+let readabilityContent;
+let cleanedHTML;
+let mhtmlViewer;
+const fontSize = 14;
 
 function setContent(content, filePathURI) {
   //console.log('MHTML Content: '+content);
-  var mhtparser = new mailparser.MailParser();
+  const mhtparser = new mailparser.MailParser();
   mhtparser.on('end', function(mail_object) {
     //console.log('mail_object:', mail_object);
 
-    var contLocation = /^content-location:(.*$)/im.exec(content);
+    const contLocation = /^content-location:(.*$)/im.exec(content);
     mail_object.contentLocation = (contLocation && contLocation.length > 0) ? contLocation[1] : 'not found';
     cleanedHTML = DOMPurify.sanitize(mail_object.html);
 
@@ -29,12 +29,12 @@ function setContent(content, filePathURI) {
     // View readability mode
 
     try {
-      var documentClone = document.cloneNode(true);
-      var article = new Readability(document.baseURI, documentClone).parse();
+      const documentClone = document.cloneNode(true);
+      const article = new Readability(document.baseURI, documentClone).parse();
       readabilityContent = article.content;
     } catch (e) {
       console.log('Error handling' + e);
-      var msg = {
+      const msg = {
         command: 'showAlertDialog',
         title: 'Readability Mode',
         message: 'This content can not be loaded.'
@@ -43,7 +43,7 @@ function setContent(content, filePathURI) {
     }
 
 
-    if(readabilityContent) {
+    if (readabilityContent) {
       updateHTMLContent($('#mhtmlViewer'), readabilityContent);
     }
 
@@ -61,12 +61,12 @@ function setContent(content, filePathURI) {
 }
 
 function handleLinks($element) {
-  $element.find('a[href]').each(function() {
-    var currentSrc = $(this).attr('href');
+  $element.find('a[href]').each(() => {
+    const currentSrc = $(this).attr('href');
     $(this).off();
-    $(this).on('click', function(e) {
+    $(this).on('click', (e) => {
       e.preventDefault();
-      var msg = {command: 'openLinkExternally', link: currentSrc};
+      const msg = {command: 'openLinkExternally', link: currentSrc};
       sendMessageToHost(msg);
     });
   });
@@ -78,24 +78,24 @@ function updateHTMLContent($targetElement, content) {
 }
 
 function init(filePathURI, objectlocation) {
-  var $htmlContent;
+  let $htmlContent;
 
-  var locale = getParameterByName('locale');
+  const locale = getParameterByName('locale');
   initI18N(locale, 'ns.viewerMHTML.json');
 
-  var extSettings;
+  let extSettings;
   loadExtSettings();
 
   $htmlContent = $('#mhtmlViewer');
 
-  var styles = ['', 'solarized-dark', 'github', 'metro-vibes', 'clearness', 'clearness-dark'];
-  var currentStyleIndex = 0;
+  const styles = ['', 'solarized-dark', 'github', 'metro-vibes', 'clearness', 'clearness-dark'];
+  let currentStyleIndex = 0;
   if (extSettings && extSettings.styleIndex) {
     currentStyleIndex = extSettings.styleIndex;
   }
 
-  var zoomSteps = ['zoomSmallest', 'zoomSmaller', 'zoomSmall', 'zoomDefault', 'zoomLarge', 'zoomLarger', 'zoomLargest'];
-  var currentZoomState = 3;
+  const zoomSteps = ['zoomSmallest', 'zoomSmaller', 'zoomSmall', 'zoomDefault', 'zoomLarge', 'zoomLarger', 'zoomLargest'];
+  let currentZoomState = 3;
   if (extSettings && extSettings.zoomState) {
     currentZoomState = extSettings.zoomState;
   }
@@ -117,8 +117,7 @@ function init(filePathURI, objectlocation) {
   $('#zoomOutButton').hide();
   $('#zoomResetButton').hide();
 
-  $('#zoomInButton').on('click', function() {
-    //console.log('#zoomInButton click');
+  $('#zoomInButton').on('click', () => {
     currentZoomState++;
     if (currentZoomState >= zoomSteps.length) {
       currentZoomState = 6;
@@ -128,8 +127,7 @@ function init(filePathURI, objectlocation) {
     saveExtSettings();
   });
 
-  $('#zoomOutButton').on('click', function() {
-    //console.log('#zoomOutButton  click');
+  $('#zoomOutButton').on('click', () => {
     currentZoomState--;
     if (currentZoomState < 0) {
       currentZoomState = 0;
@@ -139,61 +137,61 @@ function init(filePathURI, objectlocation) {
     saveExtSettings();
   });
 
-  $('#zoomResetButton').on('click', function() {
+  $('#zoomResetButton').on('click', () => {
     currentZoomState = 3;
     $htmlContent.removeClass();
     $htmlContent.addClass('markdown ' + styles[currentStyleIndex] + ' ' + zoomSteps[currentZoomState]);
     saveExtSettings();
   });
 
-  $('#openInNewWindowButton').on('click', function() {
+  $('#openInNewWindowButton').on('click', () => {
     window.parent.open(filePathURI, '_blank'); // , 'nodeIntegration=0'
   });
 
-  $('#openURLButton').on('click', function() {
-    var msg = {command: 'openLinkExternally', link: objectlocation.contentLocation.trim()};
+  $('#openURLButton').on('click', () => {
+    const msg = {command: 'openLinkExternally', link: objectlocation.contentLocation.trim()};
     sendMessageToHost(msg);
   });
 
-  $('#toSansSerifFont').on('click', function(e) {
+  $('#toSansSerifFont').on('click', (e) => {
     e.stopPropagation();
     $htmlContent[0].style.fontFamily = 'Helvetica, Arial, sans-serif';
   });
 
-  $('#toSerifFont').on('click', function(e) {
+  $('#toSerifFont').on('click', (e) => {
     e.stopPropagation();
     $htmlContent[0].style.fontFamily = 'Georgia, Times New Roman, serif';
   });
 
-  $('#increasingFontSize').on('click', function(e) {
+  $('#increasingFontSize').on('click', (e) => {
     e.stopPropagation();
     increaseFont();
   });
 
-  $('#decreasingFontSize').on('click', function(e) {
+  $('#decreasingFontSize').on('click', (e) => {
     e.stopPropagation();
     decreaseFont();
   });
 
-  $('#whiteBackgroundColor').on('click', function(e) {
+  $('#whiteBackgroundColor').on('click', (e) => {
     e.stopPropagation();
     $htmlContent[0].style.background = '#ffffff';
     $htmlContent[0].style.color = '';
   });
 
-  $('#blackBackgroundColor').on('click', function(e) {
+  $('#blackBackgroundColor').on('click', (e) => {
     e.stopPropagation();
     $htmlContent[0].style.background = '#282a36';
     $htmlContent[0].style.color = '#ffffff';
   });
 
-  $('#sepiaBackgroundColor').on('click', function(e) {
+  $('#sepiaBackgroundColor').on('click', (e) => {
     e.stopPropagation();
     $htmlContent[0].style.color = '#5b4636';
     $htmlContent[0].style.background = '#f4ecd8';
   });
 
-  $('#changeStyleButton').on('click', function() {
+  $('#changeStyleButton').on('click', () => {
     currentStyleIndex = currentStyleIndex + 1;
     if (currentStyleIndex >= styles.length) {
       currentStyleIndex = 0;
@@ -203,7 +201,7 @@ function init(filePathURI, objectlocation) {
     saveExtSettings();
   });
 
-  $('#resetStyleButton').on('click', function() {
+  $('#resetStyleButton').on('click', () => {
     currentStyleIndex = 0;
     //currentZoomState = 5;
     $htmlContent.removeClass();
@@ -211,7 +209,7 @@ function init(filePathURI, objectlocation) {
     saveExtSettings();
   });
 
-  $('#readabilityOn').on('click', function() {
+  $('#readabilityOn').on('click', () => {
     if(readabilityContent) {
       updateHTMLContent($('#mhtmlViewer'), readabilityContent);
     }
@@ -233,7 +231,7 @@ function init(filePathURI, objectlocation) {
     //}
   });
 
-  $('#readabilityOff').on('click', function() {
+  $('#readabilityOff').on('click', () => {
     updateHTMLContent($('#mhtmlViewer'), cleanedHTML);
     mhtmlViewer.style.fontSize = '';
     mhtmlViewer.style.fontFamily = '';
@@ -256,29 +254,29 @@ function init(filePathURI, objectlocation) {
   });
 
   function increaseFont() {
-    var style = window.getComputedStyle($htmlContent[0], null).getPropertyValue('font-size');
-    var fontSize = parseFloat(style);
+    const style = window.getComputedStyle($htmlContent[0], null).getPropertyValue('font-size');
+    const fontSize = parseFloat(style);
     $htmlContent[0].style.fontSize = (fontSize + 1) + 'px';
   }
 
   function decreaseFont() {
-    var style = window.getComputedStyle($htmlContent[0], null).getPropertyValue('font-size');
-    var fontSize = parseFloat(style);
+    const style = window.getComputedStyle($htmlContent[0], null).getPropertyValue('font-size');
+    const fontSize = parseFloat(style);
     $htmlContent[0].style.fontSize = (fontSize - 1) + 'px';
   }
 
-  Mousetrap.bind(['command++', 'ctrl++'], function(e) {
+  Mousetrap.bind(['command++', 'ctrl++'], () => {
     increaseFont();
     return false;
   });
 
-  Mousetrap.bind(['command+-', 'ctrl+-'], function(e) {
+  Mousetrap.bind(['command+-', 'ctrl+-'], () => {
     decreaseFont();
     return false;
   });
 
   function saveExtSettings() {
-    var settings = {
+    const settings = {
       'styleIndex': currentStyleIndex,
       'zoomState': currentZoomState
     };
