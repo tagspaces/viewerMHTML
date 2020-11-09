@@ -19,7 +19,8 @@ function setContent(content, filePathURI) {
     //console.log('mail_object:', mail_object);
 
     const contLocation = /^content-location:(.*$)/im.exec(content);
-    mail_object.contentLocation = (contLocation && contLocation.length > 0) ? contLocation[1] : 'not found';
+    mail_object.contentLocation =
+      contLocation && contLocation.length > 0 ? contLocation[1] : 'not found';
     cleanedHTML = DOMPurify.sanitize(mail_object.html);
 
     updateHTMLContent($('#mhtmlViewer'), cleanedHTML, filePathURI);
@@ -42,13 +43,12 @@ function setContent(content, filePathURI) {
       sendMessageToHost(msg);
     }
 
-
     if (readabilityContent) {
       updateHTMLContent($('#mhtmlViewer'), readabilityContent, filePathURI);
     }
 
     mhtmlViewer = document.getElementById('mhtmlViewer');
-    mhtmlViewer.style.fontSize = fontSize;//'large';
+    mhtmlViewer.style.fontSize = fontSize; //'large';
     mhtmlViewer.style.fontFamily = 'Helvetica, Arial, sans-serif';
     mhtmlViewer.style.background = '#ffffff';
     mhtmlViewer.style.color = '';
@@ -62,7 +62,7 @@ function setContent(content, filePathURI) {
 
 // fixing embedding of local images
 function fixingEmbeddingOfLocalImages($htmlContent, fileDirectory) {
-  const hasURLProtocol = (url) => {
+  const hasURLProtocol = url => {
     return (
       url.indexOf('http://') === 0 ||
       url.indexOf('https://') === 0 ||
@@ -83,21 +83,22 @@ function fixingEmbeddingOfLocalImages($htmlContent, fileDirectory) {
     let currentSrc = $(link).attr('href');
     let path;
 
-    if(currentSrc.indexOf('#') === 0 ) {
+    if (currentSrc.indexOf('#') === 0) {
       // Leave the default link behaviour by internal links
     } else {
       if (!hasURLProtocol(currentSrc)) {
-        const path = (isWeb ? '' : 'file://') + fileDirectory + '/' + currentSrc;
+        const path =
+          (isWeb ? '' : 'file://') + fileDirectory + '/' + currentSrc;
         $(link).attr('href', path);
       }
 
       $(link).off();
-      $(link).on('click', (e) => {
+      $(link).on('click', e => {
         e.preventDefault();
         if (path) {
           currentSrc = encodeURIComponent(path);
         }
-        sendMessageToHost({command: 'openLinkExternally', link: currentSrc});
+        sendMessageToHost({ command: 'openLinkExternally', link: currentSrc });
       });
     }
   });
@@ -119,20 +120,37 @@ function init(filePathURI, objectlocation) {
 
   $htmlContent = $('#mhtmlViewer');
 
-  const styles = ['', 'solarized-dark', 'github', 'metro-vibes', 'clearness', 'clearness-dark'];
+  const styles = [
+    '',
+    'solarized-dark',
+    'github',
+    'metro-vibes',
+    'clearness',
+    'clearness-dark'
+  ];
   let currentStyleIndex = 0;
   if (extSettings && extSettings.styleIndex) {
     currentStyleIndex = extSettings.styleIndex;
   }
 
-  const zoomSteps = ['zoomSmallest', 'zoomSmaller', 'zoomSmall', 'zoomDefault', 'zoomLarge', 'zoomLarger', 'zoomLargest'];
+  const zoomSteps = [
+    'zoomSmallest',
+    'zoomSmaller',
+    'zoomSmall',
+    'zoomDefault',
+    'zoomLarge',
+    'zoomLarger',
+    'zoomLargest'
+  ];
   let currentZoomState = 3;
   if (extSettings && extSettings.zoomState) {
     currentZoomState = extSettings.zoomState;
   }
 
   $htmlContent.removeClass();
-  $htmlContent.addClass('markdown ' + styles[currentStyleIndex] + ' ' + zoomSteps[currentZoomState]);
+  $htmlContent.addClass(
+    'markdown ' + styles[currentStyleIndex] + ' ' + zoomSteps[currentZoomState]
+  );
 
   // Menu: hide readability items
   $('#toSansSerifFont').show();
@@ -148,100 +166,143 @@ function init(filePathURI, objectlocation) {
   $('#zoomOutButton').hide();
   $('#zoomResetButton').hide();
 
+  $('#zoomInButton').off();
   $('#zoomInButton').on('click', () => {
     currentZoomState++;
     if (currentZoomState >= zoomSteps.length) {
       currentZoomState = 6;
     }
     $htmlContent.removeClass();
-    $htmlContent.addClass('markdown ' + styles[currentStyleIndex] + ' ' + zoomSteps[currentZoomState]);
+    $htmlContent.addClass(
+      'markdown ' +
+        styles[currentStyleIndex] +
+        ' ' +
+        zoomSteps[currentZoomState]
+    );
     saveExtSettings();
   });
 
+  $('#zoomOutButton').off();
   $('#zoomOutButton').on('click', () => {
     currentZoomState--;
     if (currentZoomState < 0) {
       currentZoomState = 0;
     }
     $htmlContent.removeClass();
-    $htmlContent.addClass('markdown ' + styles[currentStyleIndex] + ' ' + zoomSteps[currentZoomState]);
+    $htmlContent.addClass(
+      'markdown ' +
+        styles[currentStyleIndex] +
+        ' ' +
+        zoomSteps[currentZoomState]
+    );
     saveExtSettings();
   });
 
+  $('#zoomResetButton').off();
   $('#zoomResetButton').on('click', () => {
     currentZoomState = 3;
     $htmlContent.removeClass();
-    $htmlContent.addClass('markdown ' + styles[currentStyleIndex] + ' ' + zoomSteps[currentZoomState]);
+    $htmlContent.addClass(
+      'markdown ' +
+        styles[currentStyleIndex] +
+        ' ' +
+        zoomSteps[currentZoomState]
+    );
     saveExtSettings();
   });
 
+  $('#openInNewWindowButton').off();
   $('#openInNewWindowButton').on('click', () => {
     window.parent.open(filePathURI, '_blank'); // , 'nodeIntegration=0'
   });
 
+  $('#openURLButton').off();
   $('#openURLButton').on('click', () => {
-    const msg = {command: 'openLinkExternally', link: objectlocation.contentLocation.trim()};
+    const msg = {
+      command: 'openLinkExternally',
+      link: objectlocation.contentLocation.trim()
+    };
     sendMessageToHost(msg);
   });
 
-  $('#toSansSerifFont').on('click', (e) => {
+  $('#toSansSerifFont').off();
+  $('#toSansSerifFont').on('click', e => {
     e.stopPropagation();
     $htmlContent[0].style.fontFamily = 'Helvetica, Arial, sans-serif';
   });
 
-  $('#toSerifFont').on('click', (e) => {
+  $('#toSerifFont').off();
+  $('#toSerifFont').on('click', e => {
     e.stopPropagation();
     $htmlContent[0].style.fontFamily = 'Georgia, Times New Roman, serif';
   });
 
-  $('#increasingFontSize').on('click', (e) => {
+  $('#increasingFontSize').off();
+  $('#increasingFontSize').on('click', e => {
     e.stopPropagation();
     increaseFont();
   });
 
-  $('#decreasingFontSize').on('click', (e) => {
+  $('#decreasingFontSize').off();
+  $('#decreasingFontSize').on('click', e => {
     e.stopPropagation();
     decreaseFont();
   });
 
-  $('#whiteBackgroundColor').on('click', (e) => {
+  $('#whiteBackgroundColor').off();
+  $('#whiteBackgroundColor').on('click', e => {
     e.stopPropagation();
     $htmlContent[0].style.background = '#ffffff';
     $htmlContent[0].style.color = '';
   });
 
-  $('#blackBackgroundColor').on('click', (e) => {
+  $('#blackBackgroundColor').off();
+  $('#blackBackgroundColor').on('click', e => {
     e.stopPropagation();
     $htmlContent[0].style.background = '#282a36';
     $htmlContent[0].style.color = '#ffffff';
   });
 
-  $('#sepiaBackgroundColor').on('click', (e) => {
+  $('#sepiaBackgroundColor').off();
+  $('#sepiaBackgroundColor').on('click', e => {
     e.stopPropagation();
     $htmlContent[0].style.color = '#5b4636';
     $htmlContent[0].style.background = '#f4ecd8';
   });
 
+  $('#changeStyleButton').off();
   $('#changeStyleButton').on('click', () => {
     currentStyleIndex = currentStyleIndex + 1;
     if (currentStyleIndex >= styles.length) {
       currentStyleIndex = 0;
     }
     $htmlContent.removeClass();
-    $htmlContent.addClass('markdown ' + styles[currentStyleIndex] + ' ' + zoomSteps[currentZoomState]);
+    $htmlContent.addClass(
+      'markdown ' +
+        styles[currentStyleIndex] +
+        ' ' +
+        zoomSteps[currentZoomState]
+    );
     saveExtSettings();
   });
 
+  $('#resetStyleButton').off();
   $('#resetStyleButton').on('click', () => {
     currentStyleIndex = 0;
     //currentZoomState = 5;
     $htmlContent.removeClass();
-    $htmlContent.addClass('markdown ' + styles[currentStyleIndex] + ' ' + zoomSteps[currentZoomState]);
+    $htmlContent.addClass(
+      'markdown ' +
+        styles[currentStyleIndex] +
+        ' ' +
+        zoomSteps[currentZoomState]
+    );
     saveExtSettings();
   });
 
+  $('#readabilityOn').off();
   $('#readabilityOn').on('click', () => {
-    if(readabilityContent) {
+    if (readabilityContent) {
       updateHTMLContent($('#mhtmlViewer'), readabilityContent);
     }
     //if ($('#mhtmlViewer').data('clicked', true)) {
@@ -262,6 +323,7 @@ function init(filePathURI, objectlocation) {
     //}
   });
 
+  $('#readabilityOff').off();
   $('#readabilityOff').on('click', () => {
     updateHTMLContent($('#mhtmlViewer'), cleanedHTML);
     mhtmlViewer.style.fontSize = '';
@@ -285,15 +347,19 @@ function init(filePathURI, objectlocation) {
   });
 
   function increaseFont() {
-    const style = window.getComputedStyle($htmlContent[0], null).getPropertyValue('font-size');
+    const style = window
+      .getComputedStyle($htmlContent[0], null)
+      .getPropertyValue('font-size');
     const fontSize = parseFloat(style);
-    $htmlContent[0].style.fontSize = (fontSize + 1) + 'px';
+    $htmlContent[0].style.fontSize = fontSize + 1 + 'px';
   }
 
   function decreaseFont() {
-    const style = window.getComputedStyle($htmlContent[0], null).getPropertyValue('font-size');
+    const style = window
+      .getComputedStyle($htmlContent[0], null)
+      .getPropertyValue('font-size');
     const fontSize = parseFloat(style);
-    $htmlContent[0].style.fontSize = (fontSize - 1) + 'px';
+    $htmlContent[0].style.fontSize = fontSize - 1 + 'px';
   }
 
   Mousetrap.bind(['command++', 'ctrl++'], () => {
@@ -308,8 +374,8 @@ function init(filePathURI, objectlocation) {
 
   function saveExtSettings() {
     const settings = {
-      'styleIndex': currentStyleIndex,
-      'zoomState': currentZoomState
+      styleIndex: currentStyleIndex,
+      zoomState: currentZoomState
     };
     localStorage.setItem('viewerMHTMLSettings', JSON.stringify(settings));
   }
