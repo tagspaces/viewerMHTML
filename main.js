@@ -25,7 +25,7 @@ function setContent(content, filePathURI) {
 
     updateHTMLContent($('#mhtmlViewer'), cleanedHTML, filePathURI);
 
-    $('#fileMeta').append('saved on ' + mail_object.headers.date);
+    $('#fileMeta').text('saved on ' + mail_object.headers.date);
 
     // View readability mode
 
