@@ -1,3 +1,5 @@
+This repository is archived. Please use https://github.com/tagspaces/tagspaces-extensions instead.
+
 # MHTML Viewer for TagSpaces
 
 A TagSpaces extension allowing you to open MHTML and EML files.
